@@ -1,0 +1,24 @@
+<html>
+<TITLE>Organ Donor Card</TITLE><P>
+<body>
+<center>
+<A NAME="top"></A>
+<TABLE  border=0 bgcolor=FFFFFF cellpadding=0 cellspacing=0 align=center valign=top>
+<tr>
+<td>
+<A HREF="../../../misc/donor.html" taget="_parent"><IMG SRC="../../../images/vol1/v1i15p1.4.gif"></a></td><td><A HREF="../../../misc/donor.html" taget="_parent"><IMG SRC="../../../images/vol1/v1i15p2.1.gif"></A></td></tr>
+<tr><td colspan=2 align=center>
+<IMG SRC="../../../images/vol1/v1i15p1.3.gif">
+
+</td></tr>
+</table>
+</center>
+
+
+<P><P><hr><center><font size=-1>
+<a href="../../../welcome.html">Main Menu</a> - <a href="../../welcome.html">Volumes Menu</a> - <a href="../welcome.html">This Volume's Menu</a> - <a href="welcome.html">Table of Contents</a> - <A HREF="#TOP">Top of Page</A>
+</font size></center>
+<!--#include virtual="/~diablo/gdt/includes/issuefooter.inc"-->
+</body>
+</html>
+

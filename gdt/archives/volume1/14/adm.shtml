@@ -1,0 +1,47 @@
+<html>
+<TITLE>After Dinner Mint</TITLE><P>
+<body bgcolor=FFFFFF>
+<center>
+<A NAME="top"></A>
+<TABLE  width=550 cellpadding=0 cellspacing=0>
+<tr>
+<td width=550  colspan=3>
+<P><A NAME="adm"></A>
+<font size=+1><B>After Dinner Mints</B></font size.<P><P>
+
+
+<dd> Most ideas that the staff come up with for GDT just aren't funny or don't have enough umph to become a full page. We aren't willing to just let those concepts die, though. Think of After Dinner Mints as resurrected GDTs that could have been.<P>
+
+<dd> Here's a little hacking tip for Macintosh owners: How to modify IBM simms to work in a Mac. Let me say right up front that the modifications I made worked with SE's, but I haven't tested them on other, more advanced Macs. <B>Make these changes at your own risk</B>.<br></td></tr>
+
+<tr><td colspan=2>
+<dd> For those of you that might not know, the only difference between most IBM and Mac thirty pin simms are the number of integrated circuits (ICs) on the simm itself. IBM's have nine chips; Mac's run on eight. Figure 1 shows an unmodified 256K IBM simm. The modifications I made are  very easy (the most advanced tool you'll need is a screw </td>
+<td valign=top align=right><IMG SRC="../../../images/vol1/v1i14p2.1.gif"><br> <font size=-1>Figure 1:Unmodified simm</font size>
+</td></tr>
+
+<tr>
+<td rowspan=2 valign=top><center><IMG SRC="../../../images/vol1/v1i14p2.3.gif"><br><IMG SRC="../../../images/vol1/v1i14p2.4.gif"></center><br><font size=-1>Figure 3: Surface mount part under the IC, and once it's scraped off.</font size><P>
+</td>
+<td>driver), and can be done to one meg simms using the same method.<br><dd> The first step is to orient yourself to the simm. Place it so the pins are facing toward you. The chip to the far right needs to be pried off. It comes off very easily; </td>
+<td valign=top align=right><IMG SRC="../../../images/vol1/v1i14p2.2.gif"><br> <font size=-1>Figure 2: Which IC to pry up</font size></td>
+</tr>
+
+<tr>
+<td colspan=3>just stick the corner of the screwdriver under the edge of the chip and pry. See figure 2 for an example.<dd> Once the IC is up, there's a small surface mounted part that was under it (Figure 3). Simply grind this right off the board.</td></tr>
+<tr>
+<td colspan=3>
+<dd> That's it. Your done. To alter a one meg simm, use the same general method; pry off the chip to the far right and scrape off any surface mounted part that was under it.<br>
+<dd> Hope you found this helpful, and remember...if you screw something up, it's not my fault.</TD>
+</tr>
+</table>
+
+</center>
+
+
+<P><P><hr><center><font size=-1>
+<a href="../../../welcome.html">Main Menu</a> - <a href="../../welcome.html">Volumes Menu</a> - <a href="../welcome.html">This Volume's Menu</a> - <a href="welcome.html">Table of Contents</a> - <A HREF="#TOP">Top of Page</A>
+</font size></center>
+<!--#include virtual="/~diablo/gdt/includes/issuefooter.inc"-->
+</body>
+</html>
+

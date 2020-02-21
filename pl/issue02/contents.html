@@ -1,0 +1,97 @@
+<html>
+<head>
+<title>This is the table of contents, you assmuncher</title>
+</head>
+
+<BODY TEXT="01009c" LINK="3f2f4f" VLINK="6b4426" BACKGROUND="../images/bg/Backround.JPG">
+<center>
+<img src="../images/titles/smalovin.JPG" width="100%"><hr>
+
+<SCRIPT LANGUAGE="JavaScript">
+
+
+     browserName = navigator.appName;
+     browserVer = parseInt(navigator.appVersion);
+             if (browserName == "Netscape" && browserVer >= 3) version = "n3";
+             else version = "n2";
+             
+             if (version == "n3") {
+             toc1on = new Image();
+             toc1on.src = "../images/sidebars/bfront.gif";
+             toc2on = new Image();
+             toc2on.src = "../images/sidebars/bnews.gif";
+             toc3on = new Image();
+             toc3on.src = "../images/sidebars/bedtl.gif";
+             toc4on = new Image();
+             toc4on.src = "../images/sidebars/barts.gif";
+             toc5on = new Image();
+             toc5on.src = "../images/sidebars/bobwm.gif";
+             toc6on = new Image();
+             toc6on.src = "../images/sidebars/bconsp.gif";            
+             toc7on = new Image();
+             toc7on.src = "../images/sidebars/bcntst.gif";
+             toc8on = new Image();
+             toc8on.src = "../images/sidebars/bus.gif";
+             toc9on = new Image();
+             toc9on.src = "../images/sidebars/bplaces.gif";
+             toc1off = new Image();
+             toc1off.src = "../images/sidebars/front.gif";
+             toc2off = new Image();
+             toc2off.src = "../images/sidebars/news.gif";
+             toc3off = new Image();
+             toc3off.src = "../images/sidebars/edtl.gif";
+             toc4off = new Image();
+             toc4off.src = "../images/sidebars/arts.gif";
+             toc5off = new Image();
+             toc5off.src = "../images/sidebars/obwm.gif";
+             toc6off = new Image();
+             toc6off.src = "../images/sidebars/consp.gif";
+             toc7off = new Image();
+             toc7off.src = "../images/sidebars/cntst.gif";
+             toc8off = new Image();
+             toc8off.src = "../images/sidebars/us.gif";
+             toc9off = new Image();
+             toc9off.src = "../images/sidebars/places.gif";
+             }
+
+     function img_act(imgName) {
+             if (version == "n3") {
+             imgOn = eval(imgName + "on.src");
+             document [imgName].src = imgOn;
+             }
+     }
+
+     function img_inact(imgName) {
+             if (version == "n3") {
+             imgOff = eval(imgName + "off.src");
+             document [imgName].src = imgOff;     
+             }
+     }
+     
+     
+
+
+</SCRIPT>
+
+
+<A HREF="main.html" TARGET="bigfat" onMouseOver="img_act('toc1'); window.status='Go here First'; return true" onMouseOut="img_inact('toc1'); window.status=''; return true""><IMG name="toc1" SRC="../images/sidebars/front.gif" alt="It's BACON!!!" width="100%" border="0"></A><BR>
+
+<A HREF="news.html" TARGET="bigfat" onMouseOver="img_act('toc2'); window.status='News'; return true" onMouseOut="img_inact('toc2'); window.status=''; return true"><IMG name="toc2" SRC="../images/sidebars/news.gif" alt="News" width="100%" border="0"></A><BR>
+
+<A HREF="edit.html" TARGET="bigfat" onMouseOver="img_act('toc3');window.status='Editorials'; return true" onMouseOut="img_inact('toc3'); window.status=''; return true"><IMG name="toc3" SRC="../images/sidebars/edtl.gif" alt="Editorials and Letters" width="100%" border="0"></A><BR>
+
+<A HREF="art.html" TARGET="bigfat" onMouseOver="img_act('toc4');window.status='What is going on in the art world'; return true" onMouseOut="img_inact('toc4'); window.status=''; return true"><IMG name="toc4" SRC="../images/sidebars/arts.gif" alt="Art News" width="100%" border="0"></A><BR>
+
+<A HREF="obwm.html" TARGET="bigfat" onMouseOver="img_act('toc5');window.status='Official Bureau of Weights and Measures'; return true" onMouseOut="img_inact('toc5'); window.status=''; return true"><IMG name="toc5" SRC="../images/sidebars/obwm.gif" alt="Official Bureau of Weights and Measures" width="100%" border="0"></A><BR>
+
+<A HREF="cons.html" TARGET="bigfat" onMouseOver="img_act('toc6');window.status='Conspiracies'; return true" onMouseOut="img_inact('toc6'); window.status=''; return true"><IMG name="toc6" SRC="../images/sidebars/consp.gif" alt="Conspiracies" width="100%" border="0"></A><BR>
+
+<A HREF="cntst.html" TARGET="bigfat" onMouseOver="img_act('toc7');window.status='Our new Contest!'; return true" onMouseOut="img_inact('toc7'); window.status=''; return true"><IMG name="toc7" SRC="../images/sidebars/cntst.gif" alt="Our new contest!" width="100%" border="0"></A><BR>
+
+<A HREF="us.html" TARGET="bigfat" onMouseOver="img_act('toc8');window.status='Check out who we are'; return true" onMouseOut="img_inact('toc8'); window.status=''; return true"><IMG name="toc8" SRC="../images/sidebars/us.gif" alt="Who we are" width="100%" border="0"></A><BR>
+
+<A HREF="lnk.html" TARGET="bigfat" onMouseOver="img_act('toc9');window.status='Cool Links'; return true" onMouseOut="img_inact('toc9'); window.status=''; return true"><IMG name="toc9" SRC="../images/sidebars/places.gif" alt="Great Places on the Web" width="100%" border="0"></A><BR>
+
+</center>
+</body>
+</html>
