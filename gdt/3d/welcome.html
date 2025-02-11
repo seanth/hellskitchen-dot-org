@@ -8,13 +8,15 @@ You don’t need to be particularly tech-savy to recover the 3d printable file f
 1.) Use your mobile to scan each of the 10 QR codes in this issue. You can recognize them because they will note the figure number out of 10 that they are. 
 2.) When you scan the codes, copy the text and paste it into the text box on the web page.
 3.) After entering all 10 text entries, click the “Download zip file of the OBJ model.” The web page will convert the base64 encoded text back into a zip file.
-4.) Expand the zip file and you will have the OBJ of our logo ready to print. -->
+4.) Expand the zip file and you will have the OBJ of our logo ready to print.
+
+In a pinch, I bet you know some that can cat the strings,  base64 -d the file, unzip it, and present you with the prize. -->
 
 <!-- Since you are here, I assume you'd be interested in the steps we used.
 Everything was done via commandline, and the following includes the resonstruction tests we ran.
 
-zip GDTLogoInTheRound.obj.zip GDTLogoInTheRound.obj
-base64 -i GDTLogoInTheRound.obj.zip -o GDTLogoInTheRound.b64
+zip -r GDTLogoInTheRound.zip GDTLogoInTheRound.obj
+base64 -i GDTLogoInTheRound.zip -o GDTLogoInTheRound.b64
 split -n 10 -d GDTLogoInTheRound.b64 test
 for f in test*; do qrencode -o "$f.png" -r "$f"; done
 for f in test*.png; do zbarimg --raw "$f" > "b$f.txt"; done
