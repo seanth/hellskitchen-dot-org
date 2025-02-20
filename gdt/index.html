@@ -1,38 +1,218 @@
+<!DOCTYPE html>
 <html>
-<TITLE>Gracies Dinnertime Theatre</TITLE>
-<body background=images/bg/bg1.gif>
-<center>
-<table width=500 cellspacing=0 cellpadding=0> 
-<tr><td valign=top colspan=2 align=center><font size=+3>
-<B>Menu</B></font size>
-</td></tr>
-<tr><td valign=top width=250>
-<font size=+2><B>Breakfast</B></font size><br>
-<font size=+1>
-<dd><A HREF="warning.html">Warning to new diners</A><br>
-<dd><A HREF="what.html">What is GDT?</A><br>
-<dd><A HREF="responsible.html">Who's responsible?</A><p></dd></font size>
-<font size=+2><B>Lunch</B></font size><br>
-<font size=+1>
-<dd><A HREF="ifaq.html">IFAQ</A><br>
-<dd><A HREF="imagegallery/welcome.html">Image Gallery</A><br></font size>
-</td>
-<td valign=top width=250>
-<font size=+2><B>Dinner</B></font size><br>
-<font size=+1>
-<dd><strike>HTML Volume Archive<br>
-<dd><font size=-1>Volumes 1-11</strike></font><br>
-<dd><A HREF="PDF/">PDF Volume Archive</A><br>
-<dd><font size=-1>Volumes 1-32 and the Big Red Book</dd></font></br>
+<head>
+    <title>Gracies Dinnertime Theatre</title>
+    <link rel="stylesheet" href="stylesheet.css">
+    <style>
+        body {
+            font-family: system-ui, -apple-system, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 2rem;
+            background-color: #f0f0f0;
+            color: #333;
+        }
+        .menu-container {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 2rem;
+        }
+        .menu-section {
+            position: relative;
+            background: white;
+            padding: 1.5rem;
+            border-radius: 4px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .menu-title {
+            font-family: 'Glass Antiqua', serif;
+            font-size: 3rem;
+            color: #333;
+            font-weight: normal;
+        }
+        h1 {
+            font-family: 'Glass Antiqua', serif;
+            font-size: 3rem;
+            font-weight: normal;
+            margin-bottom: 2rem;
+        }
+        .menu-content {
+            min-height: 100px;
+            display: flex;
+            flex-direction: column;
+        }
+        .menu-items {
+            flex-grow: 1;
+        }
+        .menu-item a {
+            color: #333;
+            text-decoration: none;
+            padding: 0.5rem;
+            transition: color 0.2s ease;
+            display: inline-block;
+        }
+        .menu-item a:hover {
+            color: #666;
+        }
 
-<font size=+2><B>Dessert</B></font size><br>
-<font size=+1>
-<dd><strike>How to submit</strike><br>
-<dd><strike>Comments</strike><p></dd></font size>
-<font size=+2><B><A HREF="extras/welcome.html">Extras</A></B></font size><p>
-<table width=100%><tr><td align=right><font size=-2>Copyright 1995-2005 Gracies Dinnertime 
-Theatre, R.I.P.</font size></td></tr></table>
-</table>
+        .menu-item-discord {
+            display: none;
+        }
+        .menu-item-discord a {
+            color: #333;
+            text-decoration: none;
+            padding: 0.5rem;
+            transition: color 0.2s ease;
+        }
 
-</center>
+        .anniversary {
+            display: none;
+            grid-column: 1 / -1;
+            background: #333;
+            color: white;
+            text-align: center;
+            padding: 2rem;
+            margin-top: 2rem;
+        }
+        .anniversary h2 {
+            font-family: serif;
+            font-weight: normal;
+            font-size: 2.5rem;
+        }
+        .anniversary a {
+            color: white;
+            font-family: serif;
+            font-weight: normal;
+            font-size: 2.5rem;
+            text-decoration: none;
+        }
+        .footer {
+            margin-top: 2rem;
+            text-align: right;
+            font-size: 0.875rem;
+            color: #666;
+        }
+        .corner-decoration {
+            position: absolute;
+            width: 40px;
+            height: 40px;
+            opacity: 0.2;
+        }
+        .top-left { top: 10px; left: 10px; transform: rotate(0deg); }
+        .top-right { top: 10px; right: 10px; transform: rotate(90deg); }
+        .bottom-left { bottom: 10px; left: 10px; transform: rotate(270deg); }
+        .bottom-right { bottom: 10px; right: 10px; transform: rotate(180deg); }
+
+        .divider {
+            width: 100%;
+            height: 20px;
+            margin: 1rem 0;
+            opacity: 0.2;
+        }
+    </style>
+    <script>
+        const SHOW_ANNIVERSARY = false;
+
+        window.addEventListener('DOMContentLoaded', () => {
+            try {
+                const anniversarySection = document.querySelector('.anniversary');
+                const discordMenuItem = document.querySelector('.menu-item-discord');
+                if (anniversarySection) {
+                    const targetDate = new Date('2025-02-24');
+                    const today = new Date();
+
+                    if (SHOW_ANNIVERSARY || 
+                        (today.getFullYear() === targetDate.getFullYear() &&
+                         today.getMonth() === targetDate.getMonth() &&
+                         today.getDate() === targetDate.getDate())) {
+                        anniversarySection.style.display = 'block';
+                        discordMenuItem.style.display ='block';
+                    }
+                }
+            } catch (error) {
+                console.warn('Error handling anniversary section:', error);
+            }
+        });
+    </script>
+</head>
+<body background="https://www.hellskitchen.org/gdt/images/bg/bg1.gif">
+    <svg style="display: none;">
+        <!-- Art Nouveau Corner Pattern -->
+        <symbol id="corner-pattern" viewBox="0 0 100 100">
+            <path d="M10,90 Q10,40 40,10 Q60,10 90,10
+                     C80,20 70,40 70,60
+                     C70,80 60,90 40,90
+                     Q20,90 10,90"
+                  fill="none" stroke="currentColor" stroke-width="2"/>
+            <path d="M20,80 Q20,50 40,30
+                     C50,30 60,40 60,50
+                     C60,60 50,70 40,70
+                     Q30,70 20,80"
+                  fill="none" stroke="currentColor" stroke-width="1.5"/>
+        </symbol>
+
+        <!-- Art Nouveau Divider -->
+        <symbol id="divider-pattern" viewBox="0 0 400 30">
+            <path d="M10,15 Q100,5 200,15 Q300,25 390,15
+                     M40,10 Q100,20 200,10 Q300,0 360,10"
+                  fill="none" stroke="currentColor" stroke-width="1"/>
+            <circle cx="200" cy="15" r="5" fill="currentColor"/>
+        </symbol>
+    </svg>
+
+    <center>
+        <h1>Today's Menu</h1>
+        <div class="menu-container">
+            <div class="menu-section">
+                <svg class="corner-decoration top-left"><use href="#corner-pattern"/></svg>
+                <svg class="corner-decoration top-right"><use href="#corner-pattern"/></svg>
+                <svg class="corner-decoration bottom-left"><use href="#corner-pattern"/></svg>
+                <svg class="corner-decoration bottom-right"><use href="#corner-pattern"/></svg>
+                
+                <div class="menu-title"><b>Breakfast</b></div>
+                <div class="menu-content">
+                    <div class="menu-items">
+                        <div class="menu-item"><a href="warning.html">Warning to New Diners</a></div>
+                        <div class="menu-item"><a href="what.html">What is GDT?</a></div>
+                        <div class="menu-item"><a href="responsible.html">Who's Responsible?</a></div>
+                    </div>
+                </div>
+                <svg class="divider"><use href="#divider-pattern"/></svg>
+                <div class="menu-title"><b>Lunch</b></div>
+                <div class="menu-item"><a href="ifaq.html">IFAQ</a></div>
+                <div class="menu-item"><a href="imagegallery/welcome.html">Image Gallery</a></div>
+            </div>
+            
+            <div class="menu-section">
+                <svg class="corner-decoration top-left"><use href="#corner-pattern"/></svg>
+                <svg class="corner-decoration top-right"><use href="#corner-pattern"/></svg>
+                <svg class="corner-decoration bottom-left"><use href="#corner-pattern"/></svg>
+                <svg class="corner-decoration bottom-right"><use href="#corner-pattern"/></svg>
+                
+                <div class="menu-title"><b>Dinner</b></div>
+                <div class="menu-content">
+                    <div class="menu-items">
+                        <div class="menu-item"><a href="PDF/">Volume Archive (PDF)</a></div>
+                        <div class="menu-item"><a href="PDF/BigRedBook/">The Big Red Book</a></div>
+                    </div>
+                </div>
+                <svg class="divider"><use href="#divider-pattern"/></svg>
+                <div class="menu-title"><b>Dessert</b></div>
+                <div class="menu-item"><a href="https://www.youtube.com/watch?v=YmstcsemCAg" target="_window">Interview with the founders</a></div>
+                <div class="menu-item-discord"><a href="https://discord.gg/crQdfnQs2Q" target="_window">Discord</a></div>
+                <div class="menu-item"><a href="extras/welcome.html">Extras</a></div>
+            </div>
+
+            <div class="anniversary">
+                <h2><a href="PDF/Volume33/01.ItsMyBirthday.pdf">30th Anniversary Special</a></h2>
+                <p>Because apparently we haven't learned anything in three decades</p>
+            </div>
+        </div>
+        
+        <div class="footer">
+            <p>Copyright 1995-2025 "Gracies Dinnertime Theatre"</p>
+            <p><i>We're not dead, we're just resting our eyes.</i></p>
+        </div>
+    </center>
+</body>
 </html>
