@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Who's Responsible? - Gracies Dinnertime Theatre</title>
+    <link rel="stylesheet" href="stylesheet.css">
+    <style>
+        body {
+            font-family: system-ui, -apple-system, sans-serif;
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 2rem;
+            color: #333;
+        }
+        
+        h1, h2 {
+            font-family: 'Glass Antiqua', serif;
+            font-weight: normal;
+        }
+        
+        h1 {
+            font-size: 3rem;
+            margin-bottom: 2rem;
+            text-align: center;
+        }
+        
+        .intro {
+            font-style: italic;
+            text-align: center;
+            margin-bottom: 3rem;
+        }
+        
+        .timeline {
+            position: relative;
+            margin: 4rem 0;
+            padding-bottom: 150px;
+        }
+        
+        .timeline::before {
+            content: '';
+            position: absolute;
+            left: 50%;
+            width: 2px;
+            height: calc(100% - 150px);
+            background: #666;
+        }
+        
+        .era {
+            position: relative;
+            margin: 2rem 0;
+            width: 100%;
+            display: flex;
+            justify-content: center;
+        }
+        
+        .era:nth-child(odd) {
+            flex-direction: row;
+        }
+        
+        .era:nth-child(even) {
+            flex-direction: row-reverse;
+        }
+        
+        .era-content {
+            width: 45%;
+            background: white;
+            padding: 1.5rem;
+            border-radius: 4px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        
+        .era-date {
+            font-family: 'Glass Antiqua', serif;
+            font-size: 1.2rem;
+            color: #666;
+        }
+        
+        .era-title {
+            font-size: 1.5rem;
+            margin: 0.5rem 0;
+        }
+        
+        .era-description {
+            font-style: italic;
+            margin: 0.5rem 0;
+            color: #555;
+        }
+        
+        .staff-list {
+            margin: 1rem 0;
+        }
+        
+        .staff-list h3 {
+            font-size: 1.1rem;
+            margin-bottom: 0.5rem;
+        }
+        
+        .staff-list ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+        
+        .staff-list li {
+            margin: 0.3rem 0;
+        }
+        
+        .volume-span {
+            color: #666;
+            font-size: 0.9rem;
+        }
+
+        .timeline-end {
+            position: absolute;
+            left: 50%;
+            bottom: 0;
+            transform: translateX(-50%);
+        }
+    </style>
+</head>
+<body background="https://www.hellskitchen.org/gdt/images/bg/bg1.gif">
+    <h1>Who's Responsible?</h1>
+    
+    <div class="intro">
+        Like a well organized military, it's hard to blame a single person... especially when they all went through the five stages of grief.
+    </div>
+    
+    <div class="timeline">
+        <div class="era">
+            <div class="era-content">
+                <div class="era-date">1995-1996</div>
+                <h2 class="era-title">Denial</h2>
+                <p class="era-description">Volumes 1-6: "This isn't really a publication... is it?"</p>
+                
+                <div class="staff-list">
+                    <h3>Editors</h3>
+                    <ul>
+                        <li>Kelly Gunter <span class="volume-span">(Vols. 1-6)</span></li>
+                        <li>Sean T. Hammond <span class="volume-span">(Vols. 1-6)</span></li>
+                    </ul>
+                </div>
+                
+                <div class="staff-list">
+                    <h3>Staff Illustrators</h3>
+                    <ul>
+                        <li>Mark Trzepla <span class="volume-span">(Vol. 1)</span></li>
+                        <li>Scott Peterson <span class="volume-span">(Vols. 2-3)</span></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        
+        <div class="era">
+            <div class="era-content">
+                <div class="era-date">1996-1997</div>
+                <h2 class="era-title">Anger</h2>
+                <p class="era-description">Volumes 7-13: "What do you mean we can't print that?"</p>
+                
+                <div class="staff-list">
+                    <h3>Editors</h3>
+                    <ul>
+                        <li>Kelly Gunter <span class="volume-span">(Vols. 7-13)</span></li>
+                        <li>Sean T. Hammond <span class="volume-span">(Vols. 7-13)</span></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div class="era">
+            <div class="era-content">
+                <div class="era-date">1997-1998</div>
+                <h2 class="era-title">Bargaining</h2>
+                <p class="era-description">Volumes 14-20: "Maybe if we form a 501(c)(3)..."</p>
+                
+                <div class="staff-list">
+                    <h3>Editors</h3>
+                    <ul>
+                        <li>Giles Francis Hall <span class="volume-span">(Vols. 14-20)</span></li>
+                        <li>Matthew Weaver <span class="volume-span">(Vols. 14-20)</span></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div class="era">
+            <div class="era-content">
+                <div class="era-date">1998-2000</div>
+                <h2 class="era-title">Depression</h2>
+                <p class="era-description">Volumes 21-27: "Does anyone even read this anymore?"</p>
+                
+                <div class="staff-list">
+                    <h3>Editors</h3>
+                    <ul>
+                        <li>Sean Stanley <span class="volume-span">(Vols. 21-27)</span></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div class="era">
+            <div class="era-content">
+                <div class="era-date">2000-2005</div>
+                <h2 class="era-title">Acceptance</h2>
+                <p class="era-description">Volumes 28-33: "We're not dead, we're just resting our eyes."</p>
+                
+                <div class="staff-list">
+                    <h3>Editors</h3>
+                    <ul>
+                        <li>Sean T. Hammond <span class="volume-span">(Vols. 31-32)</span></li>
+                        <li>Kelly Gunter <span class="volume-span">(Vol. 33)</span></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <svg class="timeline-end" width="4" height="200">
+            <path d="M2,0 
+                     C2,50 1,100 0,150
+                     S0,180 0,200" 
+                  stroke="#666" stroke-width="0.75" fill="none"/>
+            
+            <path d="M2,0
+                     C2,50 2,100 2,150
+                     S2.5,180 2,200"
+                  stroke="#666" stroke-width="0.75" fill="none"/>
+            
+            <path d="M2,0
+                     C2,50 3,100 4,150
+                     S3.5,180 3,200"
+                  stroke="#666" stroke-width="0.75" fill="none"/>
+        </svg>
+    </div>
+</body>
+</html>
