@@ -110,30 +110,6 @@
             opacity: 0.2;
         }
     </style>
-    <script>
-        const SHOW_ANNIVERSARY = false;
-
-        window.addEventListener('DOMContentLoaded', () => {
-            try {
-                const anniversarySection = document.querySelector('.anniversary');
-                const discordMenuItem = document.querySelector('.menu-item-discord');
-                if (anniversarySection) {
-                    const targetDate = new Date('2025-02-24');
-                    const today = new Date();
-
-                    if (SHOW_ANNIVERSARY || 
-                        (today.getFullYear() === targetDate.getFullYear() &&
-                         today.getMonth() === targetDate.getMonth() &&
-                         today.getDate() === targetDate.getDate())) {
-                        anniversarySection.style.display = 'block';
-                        discordMenuItem.style.display ='block';
-                    }
-                }
-            } catch (error) {
-                console.warn('Error handling anniversary section:', error);
-            }
-        });
-    </script>
 </head>
 <body background="https://www.hellskitchen.org/gdt/images/bg/bg1.gif">
     <svg style="display: none;">
