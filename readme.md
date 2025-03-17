@@ -3,7 +3,7 @@
 ## Steps to update the site
 
 1. Introduce changes either by direct edits to files or approving pull requests from forks.
-2. Notify grahams that a change was made so the site can then up updated from github
+2. The site polls for updates every 30m so you should see it live after that, if not, contact grahams
 
 ## Admin notes
 
