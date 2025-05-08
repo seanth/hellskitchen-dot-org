@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Glossary Dinnertime Theatre</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            line-height: 1.6;
+        }
+        h1 {
+            text-align: center;
+            color: #333;
+            margin-bottom: 30px;
+        }
+        .definition {
+            margin-bottom: 15px;
+        }
+        .word {
+            text-decoration: underline;
+            font-weight: bold;
+        }
+        #glossary-container {
+            margin-top: 30px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Glossary Dinnertime Theatre</h1>
+        
+    <div id="glossary-container">
+        <p>Loading definitions...</p>
+    </div>
+
+    <script>
+        // Function to get the sort key for a term (ignoring "The" at the beginning)
+        function getSortKey(text) {
+            // Remove "The " from the beginning for sorting purposes
+            const sortText = text.trim();
+            if (sortText.toLowerCase().startsWith('the ')) {
+                return sortText.substring(4).toLowerCase();
+            }
+            return sortText.toLowerCase();
+        }
+        
+        // Function to display the definitions on the page
+        function displayDefinitions(definitions) {
+            const container = document.getElementById('glossary-container');
+            container.innerHTML = '';
+            
+            definitions.forEach(item => {
+                const definitionElement = document.createElement('p');
+                definitionElement.className = 'definition';
+                
+                const wordSpan = document.createElement('span');
+                wordSpan.className = 'word';
+                wordSpan.textContent = item.original;
+                
+                definitionElement.appendChild(wordSpan);
+                definitionElement.innerHTML += ' — ' + item.definition;
+                
+                container.appendChild(definitionElement);
+            });
+        }
+        
+        // Function to process the definitions from the text content
+        function processDefinitions(content) {
+            // Split the content by new lines to get individual definitions
+            const lines = content.split('\n').filter(line => line.trim() !== '');
+            
+            // Parse each line into word/phrase and definition
+            const definitions = lines.map(line => {
+                const parts = line.split('—');
+                if (parts.length < 2) return null; // Skip invalid lines
+                
+                const wordOrPhrase = parts[0].trim();
+                const definition = parts.slice(1).join('—').trim(); // In case there are multiple dashes
+                
+                return {
+                    original: wordOrPhrase,
+                    sortKey: getSortKey(wordOrPhrase),
+                    definition: definition
+                };
+            }).filter(item => item !== null);
+            
+            // Sort the definitions alphabetically, ignoring "The" at the beginning
+            definitions.sort((a, b) => {
+                return a.sortKey.localeCompare(b.sortKey);
+            });
+            
+            // Display the sorted definitions
+            displayDefinitions(definitions);
+        }
+        
+        // Load the definitions file when the page loads
+        window.addEventListener('DOMContentLoaded', function() {
+            // Fetch the definitions file
+            fetch('definitions.txt')
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Failed to load definitions.txt file. Make sure it exists in the same directory as this HTML file.');
+                    }
+                    return response.text();
+                })
+                .then(content => {
+                    processDefinitions(content);
+                })
+                .catch(error => {
+                    document.getElementById('glossary-container').innerHTML = 
+                        `<p style="color: red;">Error: ${error.message}</p>
+                         <p>Please make sure you have a file named "definitions.txt" in the same directory as this HTML file.</p>`;
+                });
+        });
+    </script>
+</body>
+</html>
