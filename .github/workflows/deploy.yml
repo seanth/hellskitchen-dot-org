@@ -1,0 +1,25 @@
+name: Deploy
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - master
+
+jobs:
+  ci:
+    runs-on: ubuntu-latest
+    permissions:
+        packages: write
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: rsync deployments
+        uses: burnett01/rsync-deployments@7.0.2
+        with:
+          switches: -avzr --delete
+          path: ./
+          remote_path: ${{ vars.REMOTE_RSYNC_PATH }}
+          remote_host: ${{ secrets.REMOTE_SSH_HOST }}
+          remote_port: ${{ secrets.REMOTE_SSH_PORT }}
+          remote_user: ${{ secrets.REMOTE_SSH_USER }}
+          remote_key: ${{ secrets.SSH_PRIVATE_KEY }}
