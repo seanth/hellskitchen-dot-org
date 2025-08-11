@@ -2,8 +2,8 @@
 
 ## Steps to update the site
 
-1. Introduce changes either by direct edits to files or approving pull requests from forks.
-2. The site polls for updates every 30m so you should see it live after that, if not, contact grahams
+1. Introduce changes to master, either by direct edits to files or approving pull requests from forks.
+2. The Github Action in `.github/workflows` will deploy the site
 
 ## Admin notes
 
