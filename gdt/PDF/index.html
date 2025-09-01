@@ -4,7 +4,7 @@
 <H2>GDT PDF Archive</H2>
 
 <table>
-<tr><td bgcolor=#f0f0f0><b><span onclick="toggleOrder()" style="cursor: pointer;">Volume <span id="sortArrow">▼</span></span></b><font size=-1 color=#666> Click to sort</font>
+<tr><td bgcolor=#f0f0f0><b><span onclick="toggleOrder()" style="cursor: pointer;">Volume <span id="sortArrow">&#9660;</span></span></b><font size=-1 color=#666> Click to sort</font>
 <tr><td>
 <ul id="volumeList">
 <li><A HREF="Volume35/">Volume 35</A> (Fall 2025; in progress...)
@@ -97,7 +97,7 @@ function toggleOrder() {
     
     // Toggle state and update arrow
     isChronological = !isChronological;
-    sortArrow.textContent = isChronological ? '▲' : '▼';
+    sortArrow.innerHTML = isChronological ? '&#9650;' : '&#9660;';
 }
 </script>
 
