@@ -1,0 +1,546 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Zine Arranger! Folding Instructions</title>
+</head>
+
+<style>
+* {
+    image-resolution: 300dpi;
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    background-color: #DDD;
+}
+
+p {
+    margin: 5px;
+    font-family: "Garamond", "Georgia", serif;
+}
+
+h1 {
+    font-family: "Garamond", "Georgia", serif;
+    font-size: 36pt;
+    font-weight: bold;
+}
+
+ol {
+    width: 90%;
+    flex: 1;
+}
+
+.header {
+    margin: 12px;
+    width: 100vw;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-around;
+}
+
+.header-item {
+    width: 90%;
+    margin: 8px;
+    display: flex;
+    flex-direction: row;
+    align-items: left;
+}
+
+button {
+    margin: 10px;
+    padding: 10px;
+}
+
+input {
+    margin: 5px 5px 0px 15px;
+}
+
+img {
+    margin: 15px 0px 0px 0px;
+}
+
+</style>
+
+<section class="header"><h1>Folding Instructions!</h1>
+<p>Select the layout settings for your zine to view instructions.</p>
+<p><a href="index.html">Zine Arranger</a></p></section>
+
+<section class="header">
+    <section id="layout" class="header-item">
+        <section id="opt-zinesize">
+            <p>Zine Size</p>
+
+            <input type="radio" id="zs-half" name="zsize" onchange="refreshSpecs()"></input>
+            <label for="zs-half">Half</label><br>
+
+            <input type="radio" id="zs-qtr" name="zsize" onchange="refreshSpecs()"></input>
+            <label for="zs-qtr">Quarter</label><br>
+
+            <input type="radio" id="zs-mini" name="zsize" checked="true" onchange="refreshSpecs()"></input>
+            <label for="zs-mini">Eighth (Mini)</label><br>
+
+            <input type="radio" id="zs-12th" name="zsize" onchange="refreshSpecs()"></input>
+            <label for="zs-mini">1/12th</label><br>
+            <input type="radio" id="zs-16th" name="zsize" onchange="refreshSpecs()"></input>
+            <label for="zs-mini">1/16th (Micro-Mini)</label><br>
+            <input type="radio" id="zs-24th" name="zsize" onchange="refreshSpecs()"></input>
+            <label for="zs-mini">1/24th</label><br>
+            <input type="radio" id="zs-32nd" name="zsize" onchange="refreshSpecs()"></input>
+            <label for="zs-mini">1/32nd</label><br>
+            <input type="radio" id="zs-36th" name="zsize" onchange="refreshSpecs()"></input>
+            <label for="zs-mini">1/36th</label><br>
+            <input type="radio" id="zs-48th" name="zsize" onchange="refreshSpecs()"></input>
+            <label for="zs-mini">1/48th</label><br>
+            <input type="radio" id="zs-64th" name="zsize" onchange="refreshSpecs()"></input>
+            <label for="zs-mini">1/64th</label><br>
+        </section>
+        <section id="opt-duplex">
+            <p>Print on:</p>
+            <input type="radio" id="dx-double" name="duplex" onchange="refreshSpecs()"></input>
+            <label for="dx-double">Both Sides</label><br>
+            <input type="radio" id="dx-single" name="duplex" checked="true" onchange="refreshSpecs()"></input>
+            <label for="dx-single">One Side</label><br>
+        </section>
+        <section id="opt-orient">
+            <p>Zine Orientation:</p>
+            <input type="radio" id="ori-portrait" name="paper-orient" checked="true" onchange="refreshSpecs()"></input>
+            <label for="ori-portrait">Portrait</label><br>
+            <input type="radio" id="ori-landscape" name="paper-orient" onchange="refreshSpecs()"></input>
+            <label for="ori-landscape">Landscape</label><br>
+        </section>
+        <section id="opt-spine">
+            <p>Booklet spine:</p>
+            <input type="radio" id="spine-side" name="spine-orient" checked="true" onchange="refreshSpecs()"></input>
+            <label for="spine-side">Side</label><br>
+            <input type="radio" id="spine-top" name="spine-orient" onchange="refreshSpecs()"></input>
+            <label for="spine-top">Top</label><br>
+        </section>
+    </section>
+</section>
+
+<section class="header" id="8-1PS" style="display:none">
+    <h1>Eighth Size (Mini)</h1>
+    <p>Single-Sided / Portrait / Side-Fold</p><br><br>
+    <ol><li>Hold the page with the front cover at the bottom right.</li>
+    <li>Fold in half (hamburger style).</li>
+    <li>Cut along the top of the back cover, to create a slit in the middle of the paper.</li>
+    <li>Unfold, then fold in half (hotdog style).</li>
+    <li>Push the two sides in, allowing the middle pages to split out into a diamond.</li>
+    <li>Starting with the back cover, fold the pages together until the back is opposite the front.</li>
+    </ol>
+    <img src="img/folding-8-1PS.png"></img>
+</section>
+
+<section class="header" id="8-1PT" style="display:none">
+    <h1>Eighth Size (Minizine)</h1>
+    <p>Single-Sided / Portrait / Top-Fold</p><br><br>
+    <ol><li>Hold the page with the front cover at the bottom left.</li>
+    <li>On the top row: Cut between the first and second page in the row, and between the third and fourth page in the row.</li>
+    <li>On the bottom: Cut between the second and third page in the row.</li>
+    <li>Starting with the top right, fold down so the pages are face-to-face, then over so the pages are back-to-back.</li>
+    <li>Repeat this pattern until you get to the back cover, which folds over the rest of the pages.</li>
+    <li>Staple the middle spine to add some support.</li>
+    </ol>
+    <img src="img/folding-8-1PT.png"></img>
+</section>
+
+<section class="header" id="8-1LS" style="display:none">
+    <h1>Eighth Size (Minizine)</h1>
+    <p>Single-Sided / Landscape / Side-Fold</p><br><br>
+    <ol><li>Hold the page with the front cover at the bottom right.</li>
+    <li>On the left column: Cut the seam beneath the top page, and the seam above the bottom page.</li>
+    <li>On the right column: Cut the seam between the middle two pages.</li>
+    <li>Starting with the top left, fold over so the pages are face-to-face, then down so the pages are back-to-back.</li>
+    <li>Repeat this pattern until you get to the back cover, which folds over the rest of the pages.</li>
+    <li>Staple the middle spine to add some support.</li>
+    </ol>
+    <img src="img/folding-8-1LS.png"></img>
+</section>
+
+<section class="header" id="8-1LT" style="display:none">
+    <h1>Eighth Size (Minizine)</h1>
+    <p>Single-Sided / Landscape / Top-Fold</p><br><br>
+    <ol><li>Hold the page so the front cover is at the bottom right.</li>
+    <li>Fold in half (hamburger style).</li>
+    <li>Cut along the top of the back cover, to create a slit in the middle of the paper.</li>
+    <li>Unfold, then fold in half (hotdog style).</li>
+    <li>Push the two sides in, allowing the middle pages to split out into a diamond.</li>
+    <li>Starting with the back cover, fold the pages together until the back is opposite the front.</li>
+    </ol>
+    <img src="img/folding-8-1LT.png"></img>
+</section>
+
+<section class="header" id="8-2PS" style="display:none">
+    <h1>Eighth Size (16-Page Mini)</h1>
+    <p>Double-Sided / Portrait / Side-Fold</p><br><br>
+    <ol><li>Hold the page with the front cover at the bottom right.</li>
+    <li>Fold in half left-to-right, keeping the front visible.</li>
+    <li>Fold in half top-to-bottom, keeping the front visible.</li>
+    <li>Fold in half left-to-right again, keeping the front visible.</li>
+    <li>Repeat for any additional sheets, nesting them in the middle fold of each previous sheet.</li>
+    <li>Staple the spine, then cut around the outside edges to free up the pages.</li>
+    </ol>
+    <img src="img/folding-8-2PS.png"></img>
+</section>
+
+<section class="header" id="8-2PT" style="display:none">
+    <h1>Eighth Size (16-Page Mini)</h1>
+    <p>Double-Sided / Portrait / Top-Fold</p><br><br>
+    <ol><li>Hold the page with the front cover at the bottom right.</li>
+    <li>Fold in half left-to-right, keeping the front visible.</li>
+    <li>Fold in half left-to-right again, keeping the front visible.</li>
+    <li>Fold in half top-to-bottom, keeping the front visible.</li>
+    <li>Repeat for any additional sheets, nesting them in the middle fold of each previous sheet.</li>
+    <li>Staple the spine, then cut around the outside edges to free up the pages.</li>
+    </ol>
+    <img src="img/folding-8-2PT.png"></img>
+</section>
+
+<section class="header" id="8-2LS" style="display:none">
+    <h1>Eighth Size (16-Page Mini)</h1>
+    <p>Double-Sided / Landscape / Side-Fold</p><br><br>
+    <ol><li>Hold the page with the front cover at the bottom right.</li>
+    <li>Fold in half top-to-bottom, keeping the front visible.</li>
+    <li>Fold in half top-to-bottom again, keeping the front visible.</li>
+    <li>Fold in half left-to-right, keeping the front visible.</li>
+    <li>Repeat for any additional sheets, nesting them in the middle fold of each previous sheet.</li>
+    <li>Staple the spine, then cut around the outside edges to free up the pages.</li>
+    </ol>
+    <img src="img/folding-8-2LS.png"></img>
+</section>
+
+<section class="header" id="8-2LT" style="display:none">
+    <h1>Eighth Size (16-Page Mini)</h1>
+    <p>Double-Sided / Landscape / Top-Fold</p><br><br>
+    <ol><li>Hold the page with the front cover at the bottom right.</li>
+    <li>Fold in half top-to-bottom, keeping the front visible.</li>
+    <li>Fold in half left-to-right, keeping the front visible.</li>
+    <li>Fold in half top-to-bottom again, keeping the front visible.</li>
+    <li>Repeat for any additional sheets, nesting them in the middle fold of each previous sheet.</li>
+    <li>Staple the spine, then cut around the outside edges to free up the pages.</li>
+    </ol>
+    <img src="img/folding-8-2LT.png"></img>
+</section>
+
+<section class="header" id="4-1PS" style="display:none">
+    <h1>Quarter Size</h1>
+    <p>Single-Sided / Portrait / Side-Fold</p><br><br>
+    <ol><li>Hold the page with the front cover at the bottom right.</li>
+    <li>Fold in half top-to-bottom, keeping the front visible.</li>
+    <li>Fold in half left-to-right, keeping the front visible.</li>
+    <li>Repeat for any additional sheets, nesting them in the middle fold of each previous sheet.</li>
+    <li>Staple the spine.</li>
+    </ol>
+    <img src="img/folding-4-1PS.png"></img>
+</section>
+
+<section class="header" id="4-1PT" style="display:none">
+    <h1>Quarter Size</h1>
+    <p>Single-Sided / Portrait / Top-Fold</p><br><br>
+    <ol><li>Hold the page with the front cover at the bottom right.</li>
+    <li>Fold in half left-to-right, keeping the front visible.</li>
+    <li>Fold in half top-to-bottom, keeping the front visible.</li>
+    <li>Repeat for any additional sheets, nesting them in the middle fold of each previous sheet.</li>
+    <li>Staple the spine.</li>
+    </ol>
+    <img src="img/folding-4-1PT.png"></img>
+</section>
+
+<section class="header" id="4-1LS" style="display:none">
+    <h1>Quarter Size</h1>
+    <p>Single-Sided / Landscape / Side-Fold</p><br><br>
+    <ol><li>Hold the page with the front cover at the bottom right.</li>
+    <li>Fold in half top-to-bottom, keeping the front visible.</li>
+    <li>Fold in half left-to-right, keeping the spine visible.</li>
+    <li>Repeat for any additional sheets, nesting them in the middle fold of each previous sheet.</li>
+    <li>Staple the spine.</li>
+    </ol>
+    <img src="img/folding-4-1LS.png"></img>
+</section>
+
+<section class="header" id="4-1LT" style="display:none">
+    <h1>Quarter Size</h1>
+    <p>Single-Sided / Landscape / Top-Fold</p><br><br>
+    <ol><li>Hold the page with the front cover at the bottom right.</li>
+    <li>Fold in half left-to-right, keeping the front visible.</li>
+    <li>Fold in half top-to-bottom, keeping the front visible.</li>
+    <li>Repeat for any additional sheets, nesting them in the middle fold of each previous sheet.</li>
+    <li>Staple the spine.</li>
+    </ol>
+    <img src="img/folding-4-1LT.png"></img>
+</section>
+
+<section class="header" id="4-2PS" style="display:none">
+    <h1>Quarter Size</h1>
+    <p>Double-Sided / Portrait / Side-Fold</p><br><br>
+    <ol><li>Keep sheets stacked in the order they printed.</li>
+    <li>Lay the pile with the front cover at the top right.</li>
+    <li>Cut the entire pile in half horizontally.</li>
+    <li>Stack the top pile on top of the bottom. The front & back covers should be on top.</li>
+    <li>Fold the whole stack in half left-to-right and staple the spine.</li>
+    </ol>
+    <img src="img/folding-4-2PS.png"></img>
+</section>
+
+<section class="header" id="4-2PT" style="display:none">
+    <h1>Quarter Size</h1>
+    <p>Double-Sided / Portrait / Top-Fold</p><br><br>
+    <ol><li>Keep sheets stacked in the order they printed.</li>
+    <li>Lay the pile with the front cover at the bottom right.</li>
+    <li>Cut the entire pile in half vertically.</li>
+    <li>Stack the right-hand pile on top of the left one. The front & back covers should be on top.</li>
+    <li>Fold the whole stack in half top-to-bottom and staple the spine.</li>
+    </ol>
+    <img src="img/folding-4-2PT.png"></img>
+</section>
+
+<section class="header" id="4-2LS" style="display:none">
+    <h1>Quarter Size</h1>
+    <p>Double-Sided / Landscape / Side-Fold</p><br><br>
+    <ol><li>Keep sheets stacked in the order they printed.</li>
+    <li>Lay the pile with the front cover at the top right.</li>
+    <li>Cut the entire pile in half horizontally.</li>
+    <li>Stack the top pile on top of the bottom. The front & back covers should be on top.</li>
+    <li>Fold the whole stack in half left-to-right and staple the spine.</li>
+    </ol>
+    <img src="img/folding-4-2LS.png"></img>
+</section>
+
+<section class="header" id="4-2LT" style="display:none">
+    <h1>Quarter Size</h1>
+    <p>Double-Sided / Landscape / Top-Fold</p><br><br>
+    <ol><li>Keep sheets stacked in the order they printed.</li>
+    <li>Lay the pile with the front cover at the bottom right.</li>
+    <li>Cut the entire pile in half vertically.</li>
+    <li>Stack the right-hand pile on top of the left one. The front & back covers should be on top.</li>
+    <li>Fold the whole stack in half top-to-bottom and staple the spine.</li>
+    </ol>
+    <img src="img/folding-4-2LT.png"></img>
+</section>
+
+<section class="header" id="2-P" style="display:none">
+    <h1>Half Size</h1>
+    <p>Portrait</p><br><br>
+    <ol><li>Keep sheets stacked in the order they printed.</li>
+    <li>Hold the pile with the front cover on the right.</li>
+    <li>Fold in half left-to-right.</li>
+    <li>Staple the spine.</li>
+    </ol>
+    <img src="img/folding-2-P.png"></img>
+</section>
+
+<section class="header" id="2-L" style="display:none">
+    <h1>Half Size</h1>
+    <p>Landscape</p><br><br>
+    <ol><li>Keep sheets stacked in the order they printed.</li>
+    <li>Hold the pile with the front cover on the bottom.</li>
+    <li>Fold in half top-to-bottom.</li>
+    <li>Staple the spine.</li>
+    </ol>
+    <img src="img/folding-2-L.png"></img>
+</section>
+
+<!-- Base section for micro-sized single-sided layouts (anything 1/16th or smaller) -->
+<section class="header" id="micro-single" style="display:none">
+    <h1 id="new-single-header"></h1>
+    <p id="new-single-config"></p>
+    <ol><li>Pre-fold along all of the edges, then cut the solid lines as shown below.</li>
+    <li>Unfold everything. The cut paper should form a winding <span id="micro-single-loopword">loop</span> that goes from the first to the last page.</li>
+    <li>Starting with the front cover, fold the second page against the first so that it faces outward.</li>
+    <li>Next, fold the third page in, so that it faces the second.</li>
+    <li>Continue working your way around and alternating folding outward then inward, until you get to the back cover.</li>
+    </ol>
+    <img id="new-single-template"></img>
+</section>
+
+<!-- Base section for micro-size double-sided layouts (anything 1/12th or smaller) -->
+<section class="header" id="micro-double" style="display:none">
+    <h1 id="new-double-header"></h1>
+    <p id="new-double-config"></p>
+    <ol><li>Arrange the stack of pages so that the front & back covers are facing you, in the top-left corner.</li>
+    <li>Cut the solid lines as shown below to separate out each 2-page spread.</li>
+    <li>Stack from left to right, then top to bottom.</li>
+    <li>If your zine is more than 1 printed sheet long, repeat the process for each following sheet, then nest it into the middle of the previous pages.</li>
+    </ol>
+    <img id="new-double-template"></img>
+</section>
+
+<script>
+var open = "";
+var openOrig = true;
+
+function refreshSpecs() {
+    var sizeString = "";
+    var configString = "";
+    
+    if(open != "") {
+        if(openOrig) {
+            document.getElementById(open).style.display = "none";
+        } else {
+            document.getElementById("micro-single").style.display = "none";
+            document.getElementById("micro-double").style.display = "none";
+        }
+        open = "";
+    }
+    
+    if(document.getElementById("zs-mini").checked) {
+        open = open + "8-";
+        openOrig = true;
+        sizeString = "Eighth Size (Minizine)";
+    } else if(document.getElementById("zs-half").checked) {
+        open = open + "2-";
+        openOrig = true;
+        sizeString = "Half Size";
+    } else if(document.getElementById("zs-qtr").checked) {
+        open = open + "4-";
+        openOrig = true;
+        sizeString = "Quarter Size";
+    } else if(document.getElementById("zs-12th").checked) {
+        open = open + "12-";
+        openOrig = false;
+        sizeString = "1/12th Size";
+    } else if(document.getElementById("zs-16th").checked) {
+        open = open + "16-";
+        openOrig = false;
+        sizeString = "1/16th Size (Micro-Mini)";
+    } else if(document.getElementById("zs-24th").checked) {
+        open = open + "24-";
+        openOrig = false;
+        sizeString = "1/24th Size";
+    } else if(document.getElementById("zs-32nd").checked) {
+        open = open + "32-";
+        openOrig = false;
+        sizeString = "1/32nd Size";
+    } else if(document.getElementById("zs-36th").checked) {
+        open = open + "36-";
+        openOrig = false;
+        sizeString = "1/36th Size";
+    } else if(document.getElementById("zs-48th").checked) {
+        open = open + "48-";
+        openOrig = false;
+        sizeString = "1/48th Size";
+    } else if(document.getElementById("zs-64th").checked) {
+        open = open + "64-";
+        openOrig = false;
+        sizeString = "1/64th Size";
+    } else {
+        open = open + "8-";
+        openOrig = true;
+        sizeString = "Eighth Size (Minizine)";
+    }
+    
+    if(open == "2-" ) {
+        if(document.getElementById("ori-portrait").checked) {
+            open = open + "P";
+            configString = "Portrait";
+        } else {
+            open = open + "L";
+            configString = "Landscape";
+        }
+    } else {
+        if(document.getElementById("dx-double").checked) {
+            open = open + "2";
+            configString = "Double-Sided / ";
+        } else {
+            open = open + "1";
+            configString = "Single-Sided / ";
+        }
+        
+        if(document.getElementById("ori-portrait").checked) {
+            open = open + "P";
+            configString = configString + "Portrait / ";
+        } else {
+            open = open + "L";
+            configString = configString + "Landscape / ";
+        }
+        
+        if(document.getElementById("spine-side").checked) {
+            open = open + "S";
+            configString = configString + "Side-Fold";
+        } else {
+            open = open + "T";
+            configString = configString + "Top-Fold";
+        }
+    }
+    
+    console.log(open);
+    if(openOrig) {
+        document.getElementById(open).style.display = "flex";
+    } else {
+        if(document.getElementById("zs-12th").checked) {
+            document.getElementById("micro-single-loopword").innerHTML = "chain";
+        } else {
+            document.getElementById("micro-single-loopword").innerHTML = "loop";
+        }
+        
+        if(document.getElementById("dx-double").checked) {
+            document.getElementById("new-double-header").innerHTML = sizeString;
+            document.getElementById("new-double-config").innerHTML = configString;
+            document.getElementById("new-double-template").src = "img/" + open + ".png";
+            document.getElementById("micro-double").style.display = "flex";
+        } else {
+            document.getElementById("new-single-header").innerHTML = sizeString;
+            document.getElementById("new-single-config").innerHTML = configString;
+            document.getElementById("new-single-template").src = "img/" + open + ".png";
+            document.getElementById("micro-single").style.display = "flex";
+        }
+    }
+}
+
+function loadSpecs(str) {
+    if(str.length >=5) {
+        if(str.startsWith("2-")) {
+            document.getElementById("zs-half").checked = true;
+        } else if(str.startsWith("4-")) {
+            document.getElementById("zs-qtr").checked = true;
+        } else if(str.startsWith("8-")) {
+            document.getElementById("zs-mini").checked = true;
+        } else if(str.startsWith("12-")) {
+            document.getElementById("zs-12th").checked = true;
+        } else if(str.startsWith("16-")) {
+            document.getElementById("zs-16th").checked = true;
+        } else if(str.startsWith("24-")) {
+            document.getElementById("zs-24th").checked = true;
+        } else if(str.startsWith("32-")) {
+            document.getElementById("zs-32nd").checked = true;
+        } else if(str.startsWith("36-")) {
+            document.getElementById("zs-36th").checked = true;
+        } else if(str.startsWith("48-")) {
+            document.getElementById("zs-48th").checked = true;
+        } else if(str.startsWith("64-")) {
+            document.getElementById("zs-64th").checked = true;
+        } else {
+            document.getElementById("zs-mini").checked = true;
+        }
+        
+        str = str.split("-")[1].toUpperCase();
+        
+        if(str.charAt(0) == "1") {
+            document.getElementById("dx-single").checked = true;
+        } else {
+            document.getElementById("dx-double").checked = true;
+        }
+        
+        if(str.charAt(1) == "P") {
+            document.getElementById("ori-portrait").checked = true;
+        } else {
+            document.getElementById("ori-landscape").checked = true;
+        }
+        
+        if(str.charAt(2) == "S") {
+            document.getElementById("spine-side").checked = true;
+        } else {
+            document.getElementById("spine-top").checked = true;
+        }
+    }
+    refreshSpecs();
+}
+
+if(location.search != "") {
+    loadSpecs(location.search.substr(1));
+} else {
+    refreshSpecs();
+}
+
+</script>
