@@ -1,0 +1,451 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>GDT Print-on-demander</title>
+<style>
+/* Zine layout -- these must stay exact */
+:root {
+  --sheet-width: 850px;
+  --sheet-height: 1100px;
+  --page-width: 425px;
+  --page-height: 275px;
+  --sheet-scale: 1;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; image-resolution: 300dpi; }
+
+/*body { font-family: "Times New Roman", Times, serif; color: #000; margin: 12px; }*/
+body { font-family: "Times New Roman", Times, serif; color: #000; }
+
+h1 { font-size: 2em; margin-bottom: 4px; }
+p  { margin: 4px 0; }
+a  { color: #00f; }
+hr { margin: 8px 0; }
+#archive ul { padding-left: 20px; }
+/*#zine { display: flex; flex-direction: column; align-items: center; }*/
+/*#zine { text-align: center; }*/
+/*#zine { }*/
+
+/* Archive browser */
+.vol-header { cursor: pointer; }
+.vol-header:hover { text-decoration: underline; }
+
+.issue-list { display: none; margin: 2px 0 2px 20px; }
+.issue-list.open { display: block; }
+.issue-link { cursor: pointer; color: #00f; text-decoration: underline; font-size: 0.95em; }
+.issue-link:hover { color: #f00; }
+.issue-link.selected { color: #800; font-weight: bold; }
+
+/* Controls */
+#controls label { margin-right: 10px; }
+#controls input[type=number] { width: 60px; }
+
+/* Zine layout classes */
+.zine-sheet {
+  width: var(--sheet-width);
+  height: var(--sheet-height);
+  display: grid;
+  grid-template-areas: "tl tr" "bl br";
+}
+/*.zine-sheet { 
+  margin: 12px auto; 
+  transform: scale(var(--sheet-scale)); 
+  transform-origin: top left; 
+}*/
+.half-por { grid-template-areas: "tl tr"; }
+.half-lnd { grid-template-areas: "tr" "tl"; }
+.zine-page {
+  width: var(--page-width);
+  height: var(--page-height);
+  padding: .2rem;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+  flex: 1;
+}
+.tl { grid-area: tl; }
+.tr { grid-area: tr; }
+.bl { grid-area: bl; }
+.br { grid-area: br; }
+.rotate { transform: rotate(180deg); }
+
+@media screen {
+  /*.zine-sheet { margin: 12px; transform: scale(var(--sheet-scale)); transform-origin: top left; }*/
+  .zine-sheet { margin: 12px; margin-bottom: var(--sheet-margin-bottom); transform: scale(var(--sheet-scale)); transform-origin: top left; }
+  /*.zine-sheet { margin: 12px auto; transform: scale(var(--sheet-scale)); transform-origin: top left; }*/
+  .zine-page  { border: 1px solid #000; }
+}
+
+@media print {
+  .noprint { display: none !important; }
+  @page { margin: 0; bleed: 0; }
+  .zine-sheet { width: 100vw; height: 100vh; float: left; page-break-after: always; page-break-inside: avoid; }
+  .zine-page  { background: #fff; }
+}
+</style>
+<style id="page-orient-style"></style>
+<script src="pdfjs/build/pdf.js"></script>
+</head>
+<body background="https://www.hellskitchen.org/gdt/images/bg/letterbg.gif">
+
+
+<div class="noprint">
+  <table style="background-color:#ffffff" border=1 width=575><tr><td>
+  
+  <h1>Gracies Dinnertime Theatre &mdash; Print-on-demander</h1>
+  <p>Select an issue from the archive below to arrange it as a printable booklet.</p>
+  <hr>
+
+  <div id="archive">Loading archive&hellip;</div>
+
+  <hr>
+
+  <div id="controls" style="display:none">
+    <p><b>Selected:</b> <span id="current-issue-name">&mdash;</span></p>
+    <p style="margin-top:6px">
+      <b>Orientation:</b>
+      <label><input type="radio" name="paper-orient" id="ori-portrait"  checked onchange="refreshSpecs()"> Portrait</label>
+      <label><input type="radio" name="paper-orient" id="ori-landscape"        onchange="refreshSpecs()"> Landscape</label>
+      &nbsp;&nbsp;
+      <label><input type="checkbox" id="flip-bc" onchange="refreshSpecs()"> Flip back cover</label>
+    </p>
+    <p style="margin-top:4px">
+      <b>Paper:</b>
+      <button onclick="setPageUSLetter()">US Letter</button>
+      <button onclick="setPageA4()">A4</button>
+      &nbsp;
+      <input type="number" id="rt-width"  min="0.25" max="1100" value="8.5" onchange="refreshSpecs()" style="width:55px">
+      <span id="rt-width-label">W</span>
+      &times;
+      <input type="number" id="rt-height" min="0.25" max="1100" value="11"  onchange="refreshSpecs()" style="width:55px">
+      <span id="rt-height-label">H</span>
+      <label><input type="radio" name="page-unit" id="page-inches" checked onchange="refreshSpecs()"> in</label>
+      <label><input type="radio" name="page-unit" id="page-mm"           onchange="refreshSpecs()"> mm</label>
+    </p>
+    <p style="margin-top:6px">
+      <span id="lbl-pc-mult"></span>
+      &nbsp;|&nbsp;
+      <span id="folding-ins"></span>
+    </p>
+    <p style="margin-top:6px"><button onclick="window.print()">Print / Save as PDF</button></p>
+  </div>
+
+  <hr>
+</td></tr></table>
+</div>
+
+
+<div id="zine"></div>
+<!-- <div id="zine" style="text-align:center"></div> -->
+
+
+<script>
+//  ARCHIVE CONSTANTS
+const ARCHIVE_BASE = 'https://hellskitchen.org/gdt/PDF/';
+// const ARCHIVE_BASE = 'PDF/';
+
+// State
+var currentPdfUrl  = null;
+var zinePortrait   = true;
+var flipBackCover  = true;
+var pagePortrait   = false;
+var aspectWidth    = 11;
+var aspectHeight   = 8.5;
+var pagerat        = 5.5 / 4.25;
+var sheetWidth     = 1100;
+var sheetHeight    = 850;
+var pageWidth      = 275;
+var pageHeight     = 425;
+var pageCount      = 0;
+
+// Archive browser 
+async function loadArchiveIndex() {
+  const resp = await fetch(ARCHIVE_BASE);
+  const html = await resp.text();
+  const doc  = new DOMParser().parseFromString(html, 'text/html');
+  const volumes = [];
+  for (const a of doc.querySelectorAll('a[href]')) {
+    const href = a.getAttribute('href');
+    if (!href || !href.endsWith('/') || href === '../' || href === './') continue;
+    if (href.startsWith('http') && !href.startsWith(ARCHIVE_BASE)) continue;
+    const name = a.textContent.trim();
+    if (!name) continue;
+    //don't show BRB directory
+    if (href.includes('BigRedBook')) continue;
+    const url  = href.startsWith('http') ? href : ARCHIVE_BASE + href.replace(/^\.\//, '');
+    const li   = a.closest('li');
+    let meta   = '';
+    if (li) {
+      const after = li.textContent.trim().slice(name.length).trim();
+      if (after.startsWith('(')) meta = after.replace(/^\(/, '').replace(/\).*$/, '');
+    }
+    volumes.push({ name, url, meta });
+  }
+  return volumes;
+}
+
+async function loadVolumeIssues(url) {
+  const resp = await fetch(url);
+  const html = await resp.text();
+  const doc  = new DOMParser().parseFromString(html, 'text/html');
+  const pdfs = [];
+  for (const a of doc.querySelectorAll('a[href]')) {
+    const href = a.getAttribute('href');
+    if (!href || !href.toLowerCase().endsWith('.pdf')) continue;
+    //This will remove compilations, assuming they begin with '00'
+    if (/^00[.\-]/i.test(href)) continue;
+    const name   = decodeURIComponent(href.replace(/\.pdf$/i, ''));
+    const pdfUrl = url.replace(/\/?$/, '/') + href;
+    pdfs.push({ name, url: pdfUrl });
+  }
+  return pdfs;
+}
+
+function renderArchive(volumes) {
+  const container = document.getElementById('archive');
+  if (!volumes || volumes.length === 0) {
+    container.textContent = 'Could not load archive.';
+    return;
+  }
+
+  const ul = document.createElement('ul');
+
+  for (const vol of volumes) {
+    const li = document.createElement('li');
+
+    const header = document.createElement('span');
+    header.className   = 'vol-header';
+    header.textContent = vol.name + (vol.meta ? ' (' + vol.meta + ')' : '');
+
+    const issueUl = document.createElement('ul');
+    issueUl.className = 'issue-list';
+
+    let loaded = false;
+
+    header.addEventListener('click', async () => {
+      const isOpen = issueUl.classList.contains('open');
+
+      // close all open volumes
+      document.querySelectorAll('.issue-list.open').forEach(el => el.classList.remove('open'));
+
+      if (!isOpen) {
+        issueUl.classList.add('open');
+        if (!loaded) {
+          loaded = true;
+          issueUl.innerHTML = '<li>Loading&hellip;</li>';
+          const pdfs = await loadVolumeIssues(vol.url);
+          issueUl.innerHTML = '';
+          if (!pdfs || pdfs.length === 0) {
+            issueUl.innerHTML = '<li>No PDFs found.</li>';
+            return;
+          }
+          for (const pdf of pdfs) {
+            const issueLi   = document.createElement('li');
+            const issueLink = document.createElement('span');
+            issueLink.className   = 'issue-link';
+            issueLink.textContent = pdf.name;
+            issueLink.addEventListener('click', () => {
+              document.querySelectorAll('.issue-link.selected').forEach(el => el.classList.remove('selected'));
+              issueLink.classList.add('selected');
+              document.getElementById('current-issue-name').textContent = pdf.name;
+              document.getElementById('controls').style.display = 'block';
+              document.title = pdf.name + ' \u2014 GDT Zine Arranger';
+              currentPdfUrl = pdf.url;
+              refreshSpecs();
+            });
+            issueLi.appendChild(issueLink);
+            issueUl.appendChild(issueLi);
+          }
+        }
+      }
+    });
+
+    li.appendChild(header);
+    li.appendChild(issueUl);
+    ul.appendChild(li);
+  }
+
+  container.innerHTML = '';
+  container.appendChild(ul);
+}
+
+// ── PDF loading ───────────────────────────────
+function selectFile() {
+  if (!currentPdfUrl) return;
+
+  const loadingTask = pdfjsLib.getDocument(currentPdfUrl);
+
+  (async () => {
+    const pdf             = await loadingTask.promise;
+    const actualPageCount = pdf.numPages;
+    pageCount             = actualPageCount;
+
+    // Fewer than 4 pages: render as-is, no zine layout
+    if (actualPageCount < 4) {
+      const zineEl = document.getElementById('zine');
+      zineEl.innerHTML = '<p><i>This issue has fewer than 4 pages and will be displayed as-is rather than arranged as a zine.</i></p>';
+      for (let i = 1; i <= actualPageCount; i++) {
+        const page     = await pdf.getPage(i);
+        const viewport = page.getViewport({ scale: 1 });
+        const scale    = Math.min(pageWidth / viewport.width, pageHeight / viewport.height);
+        const vp2      = page.getViewport({ scale });
+        const canvas   = document.createElement('canvas');
+        const os       = 2;
+        canvas.width   = Math.floor(vp2.width  * os);
+        canvas.height  = Math.floor(vp2.height * os);
+        canvas.style.width   = Math.floor(vp2.width)  + 'px';
+        canvas.style.height  = Math.floor(vp2.height) + 'px';
+        canvas.style.display = 'block';
+        canvas.style.margin  = '12px';
+        canvas.style.border  = '1px solid #000';
+        zineEl.appendChild(canvas);
+        page.render({ canvasContext: canvas.getContext('2d'), transform: [os,0,0,os,0,0], viewport: vp2 });
+      }
+      return;
+    }
+
+    arrangeZineSheets();
+    for (let i = 1; i <= actualPageCount; i++) {
+      const page   = await pdf.getPage(i);
+      let viewport = page.getViewport({ scale: 1 });
+      const scale  = (viewport.width / viewport.height >= pagerat)
+                     ? pageWidth  / viewport.width
+                     : pageHeight / viewport.height;
+      viewport     = page.getViewport({ scale });
+      const os     = 3;
+      const canvas = document.getElementById('p' + (i - 1));
+      if (!canvas) continue;
+      const ctx    = canvas.getContext('2d');
+      canvas.width   = Math.floor(viewport.width  * os);
+      canvas.height  = Math.floor(viewport.height * os);
+      canvas.style.width  = Math.floor(viewport.width)  + 'px';
+      canvas.style.height = Math.floor(viewport.height) + 'px';
+      page.render({ canvasContext: ctx, transform: [os,0,0,os,0,0], viewport });
+    }
+  })();
+}
+
+// ── Zine specs ────────────────────────────────
+function setPageUSLetter() {
+  document.getElementById('page-inches').checked = true;
+  document.getElementById('rt-width').value  = '8.5';
+  document.getElementById('rt-height').value = '11';
+  refreshSpecs();
+}
+function setPageA4() {
+  document.getElementById('page-mm').checked = true;
+  document.getElementById('rt-width').value  = '210';
+  document.getElementById('rt-height').value = '297';
+  refreshSpecs();
+}
+
+function refreshSpecs() {
+  zinePortrait  = document.getElementById('ori-portrait').checked;
+  flipBackCover = document.getElementById('flip-bc').checked;
+
+  const specsString = zinePortrait ? 'h2ps' : 'h2ls';
+  // document.getElementById('folding-ins').innerHTML =
+  //   '<a href="/gdt/folding.html?' + specsString + '">Folding instructions</a>';
+  // document.getElementById('lbl-pc-mult').textContent =
+  //   'Page count should be a multiple of 4 to avoid blank pages.';
+
+  // For half-size, paper orientation is opposite to zine orientation
+  pagePortrait = !zinePortrait;
+
+  if (pagePortrait) {
+    document.getElementById('rt-width-label').textContent  = 'W';
+    document.getElementById('rt-height-label').textContent = 'H';
+    aspectWidth  = +document.getElementById('rt-width').value;
+    aspectHeight = +document.getElementById('rt-height').value;
+  } else {
+    document.getElementById('rt-width-label').textContent  = 'H';
+    document.getElementById('rt-height-label').textContent = 'W';
+    aspectWidth  = +document.getElementById('rt-height').value;
+    aspectHeight = +document.getElementById('rt-width').value;
+  }
+
+  const divHoriz = zinePortrait ? 2 : 1;
+  const divVert  = zinePortrait ? 1 : 2;
+  pagerat = (aspectWidth / divHoriz) / (aspectHeight / divVert);
+
+  let scl = aspectWidth;
+  if (scl === 0) scl = 1;
+  while (scl < 1000) scl *= 2;
+  scl = Math.floor(scl / aspectWidth);
+
+  sheetWidth  = scl * aspectWidth;
+  sheetHeight = scl * aspectHeight;
+  pageWidth   = Math.floor(sheetWidth  / divHoriz);
+  pageHeight  = Math.floor(sheetHeight / divVert);
+
+  const rt = document.querySelector(':root');
+  rt.style.setProperty('--sheet-width',  sheetWidth  + 'px');
+  rt.style.setProperty('--sheet-height', sheetHeight + 'px');
+  rt.style.setProperty('--page-width',   pageWidth   + 'px');
+  rt.style.setProperty('--page-height',  pageHeight  + 'px');
+  rt.style.setProperty('--sheet-scale',  550 / sheetWidth);
+  const scaledHeight = Math.floor(sheetHeight * (550 / sheetWidth));
+  rt.style.setProperty('--sheet-margin-bottom', (scaledHeight - sheetHeight + 12) + 'px');
+
+  document.getElementById('page-orient-style').textContent =
+    '@page { size: ' + (pagePortrait ? 'portrait' : 'landscape') + '; }';
+
+  selectFile();
+}
+
+// ── Zine sheet builder ────────────────────────
+function arrangeZineSheets() {
+  const zineEl = document.getElementById('zine');
+  zineEl.innerHTML = '';
+
+  if (pageCount % 4 !== 0) pageCount += 4 - (pageCount % 4);
+
+  let html = '';
+  const rot = ' rotate';
+
+  if (zinePortrait) {
+    for (let i = 0; i < pageCount / 4; i++) {
+      const s = 2 * i, e = pageCount - s - 1;
+      html += `<section class="zine-sheet half-por" id="s${i*2}">
+        <section class="zine-page tl"><canvas id="p${e}"></canvas></section>
+        <section class="zine-page tr"><canvas id="p${s}"></canvas></section>
+      </section>`;
+      html += `<section class="zine-sheet half-por" id="s${i*2+1}">
+        <section class="zine-page tl"><canvas id="p${s+1}"></canvas></section>
+        <section class="zine-page tr"><canvas id="p${e-1}"></canvas></section>
+      </section>`;
+    }
+  } else {
+    for (let i = 0; i < pageCount / 4; i++) {
+      const s     = 2 * i, e = pageCount - s - 1;
+      const bcRot = (i === 0 && !flipBackCover) ? rot : '';
+      html += `<section class="zine-sheet half-lnd" id="s${i}_a">
+        <section class="zine-page tl"><canvas id="p${s}"></canvas></section>
+        <section class="zine-page tr${bcRot}"><canvas id="p${e}"></canvas></section>
+      </section>`;
+      html += `<section class="zine-sheet half-lnd" id="s${i}_b">
+        <section class="zine-page tl${rot}"><canvas id="p${s+1}"></canvas></section>
+        <section class="zine-page tr${rot}"><canvas id="p${e-1}"></canvas></section>
+      </section>`;
+    }
+  }
+
+  zineEl.innerHTML = html;
+  // zineEl.innerHTML = '<div style="display:inline-block;text-align:left">' + html + '</div>';
+}
+
+// ── Init ──────────────────────────────────────
+(async () => {
+  if (typeof pdfjsLib !== 'undefined') {
+    pdfjsLib.GlobalWorkerOptions.workerSrc = 'pdfjs/build/pdf.worker.js';
+  }
+  refreshSpecs();
+  const volumes = await loadArchiveIndex();
+  renderArchive(volumes);
+})();
+</script>
+
+</body>
+</html>
