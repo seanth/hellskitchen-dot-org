@@ -11,11 +11,12 @@
   --page-width: 425px;
   --page-height: 275px;
   --sheet-scale: 1;
+  --canvas-print-size: 100vw;
+  --canvas-print-height: 100vh;
 }
 
 * { box-sizing: border-box; margin: 0; padding: 0; image-resolution: 300dpi; }
 
-/*body { font-family: "Times New Roman", Times, serif; color: #000; margin: 12px; }*/
 body { font-family: "Times New Roman", Times, serif; color: #000; }
 
 h1 { font-size: 2em; margin-bottom: 4px; }
@@ -23,9 +24,6 @@ p  { margin: 4px 0; }
 a  { color: #00f; }
 hr { margin: 8px 0; }
 #archive ul { padding-left: 20px; }
-/*#zine { display: flex; flex-direction: column; align-items: center; }*/
-/*#zine { text-align: center; }*/
-/*#zine { }*/
 
 /* Archive browser */
 .vol-header { cursor: pointer; }
@@ -48,11 +46,7 @@ hr { margin: 8px 0; }
   display: grid;
   grid-template-areas: "tl tr" "bl br";
 }
-/*.zine-sheet { 
-  margin: 12px auto; 
-  transform: scale(var(--sheet-scale)); 
-  transform-origin: top left; 
-}*/
+
 .half-por { grid-template-areas: "tl tr"; }
 .half-lnd { grid-template-areas: "tr" "tl"; }
 .zine-page {
@@ -72,26 +66,27 @@ hr { margin: 8px 0; }
 .rotate { transform: rotate(180deg); }
 
 @media screen {
-  /*.zine-sheet { margin: 12px; transform: scale(var(--sheet-scale)); transform-origin: top left; }*/
   .zine-sheet { margin: 12px; margin-bottom: var(--sheet-margin-bottom); transform: scale(var(--sheet-scale)); transform-origin: top left; }
-  /*.zine-sheet { margin: 12px auto; transform: scale(var(--sheet-scale)); transform-origin: top left; }*/
   .zine-page  { border: 1px solid #000; }
 }
 
 @media print {
   .noprint { display: none !important; }
-  @page { margin: 0; bleed: 0; }
+  body { margin: 0; }
+  /*@page { margin: 0; bleed: 0; }*/
+  @page { margin: 0;}
   .zine-sheet { width: 100vw; height: 100vh; float: left; page-break-after: always; page-break-inside: avoid; }
   .zine-page  { background: #fff; }
+  #zine { margin: 0; padding: 0; vertical-align: top; }
+  #zine canvas { width: var(--canvas-print-size) !important; height: var(--canvas-print-height) !important; object-fit: contain; display: block; margin: 0; border: 0 !important; vertical-align: top; }
+
 }
 </style>
 <style id="page-orient-style"></style>
 <script src="pdfjs/build/pdf.js"></script>
 </head>
 <body background="https://www.hellskitchen.org/gdt/images/bg/letterbg.gif">
-
-
-<div class="noprint">
+<div class="noprint"> 
   <table style="background-color:#ffffff" border=1 width=575><tr><td>
   
   <h1>Gracies Dinnertime Theatre &mdash; Print-on-demander</h1>
@@ -130,12 +125,12 @@ hr { margin: 8px 0; }
       <span id="folding-ins"></span>
     </p>
     <p style="margin-top:6px"><button onclick="window.print()">Print / Save as PDF</button></p>
+    <!-- <p style="margin-top:6px"><button onclick="smallPageMode ? window.open(currentPdfUrl, '_blank') : window.print()">Print / Save as PDF</button></p> -->
   </div>
 
   <hr>
 </td></tr></table>
 </div>
-
 
 <div id="zine"></div>
 <!-- <div id="zine" style="text-align:center"></div> -->
@@ -144,7 +139,7 @@ hr { margin: 8px 0; }
 <script>
 //  ARCHIVE CONSTANTS
 const ARCHIVE_BASE = 'https://hellskitchen.org/gdt/PDF/';
-// const ARCHIVE_BASE = 'PDF/';
+//const ARCHIVE_BASE = 'PDF/';
 
 // State
 var currentPdfUrl  = null;
@@ -273,6 +268,8 @@ function renderArchive(volumes) {
 
 // ── PDF loading ───────────────────────────────
 function selectFile() {
+  document.documentElement.style.setProperty('--canvas-print-size', '100vw');
+  document.documentElement.style.setProperty('--canvas-print-height', '100vh');
   if (!currentPdfUrl) return;
 
   const loadingTask = pdfjsLib.getDocument(currentPdfUrl);
@@ -283,9 +280,11 @@ function selectFile() {
     pageCount             = actualPageCount;
 
     // Fewer than 4 pages: render as-is, no zine layout
+    // window.smallPageMode = false;
     if (actualPageCount < 4) {
       const zineEl = document.getElementById('zine');
-      zineEl.innerHTML = '<p><i>This issue has fewer than 4 pages and will be displayed as-is rather than arranged as a zine.</i></p>';
+      zineEl.innerHTML = '';
+      //zineEl.innerHTML = '<p><i>This issue has fewer than 4 pages and will be displayed as-is rather than arranged as a zine.</i></p>';
       for (let i = 1; i <= actualPageCount; i++) {
         const page     = await pdf.getPage(i);
         const viewport = page.getViewport({ scale: 1 });
@@ -297,17 +296,49 @@ function selectFile() {
         canvas.height  = Math.floor(vp2.height * os);
         canvas.style.width   = Math.floor(vp2.width)  + 'px';
         canvas.style.height  = Math.floor(vp2.height) + 'px';
+        // canvas.style.width   = '100vw';
+        // canvas.style.height  = '100vh';
         canvas.style.display = 'block';
         canvas.style.margin  = '12px';
+        // canvas.style.margin  = '0';
         canvas.style.border  = '1px solid #000';
         zineEl.appendChild(canvas);
         page.render({ canvasContext: canvas.getContext('2d'), transform: [os,0,0,os,0,0], viewport: vp2 });
+        //trying to fix extra page when printing
+        if (i < actualPageCount) {
+          canvas.style.pageBreakAfter = 'always';
+        } else {
+          canvas.style.pageBreakAfter = 'avoid';
+        }
       }
+      // window.smallPageMode = true;
+      document.getElementById('page-orient-style').textContent = '@page { size: portrait; }';
+      document.documentElement.style.setProperty('--canvas-print-size', '97vw');
+      document.documentElement.style.setProperty('--canvas-print-height', '97vh');
       return;
     }
 
+
     arrangeZineSheets();
-    for (let i = 1; i <= actualPageCount; i++) {
+
+    ///////////////////STH-0319-2026
+    // Determine if we have an insert situation
+    const hasInsert = (pageCount % 4 === 2);
+
+    // console.log('=========');
+    // console.log(hasInsert);
+    // console.log(pageCount);
+    
+    // if (hasInsert){
+    //   pageCount=pageCount+2;
+    // }
+    // console.log(pageCount);
+    // console.log('=========');
+
+    let i=1;
+    while (i <= actualPageCount){
+    //while (i <= pageCount){
+      // console.log(i);
       const page   = await pdf.getPage(i);
       let viewport = page.getViewport({ scale: 1 });
       const scale  = (viewport.width / viewport.height >= pagerat)
@@ -323,7 +354,32 @@ function selectFile() {
       canvas.style.width  = Math.floor(viewport.width)  + 'px';
       canvas.style.height = Math.floor(viewport.height) + 'px';
       page.render({ canvasContext: ctx, transform: [os,0,0,os,0,0], viewport });
+      i++;
     }
+    //now repeat the insert pages
+    if (hasInsert) {
+      const mid1 = Math.floor(actualPageCount / 2) - 1;
+      const mid2 = Math.floor(actualPageCount / 2);
+
+      for (const [pdfPageNum, canvasId] of [[mid1+1, 'p'+mid1+'b'], [mid2+1, 'p'+mid2+'b']]) {
+        const page   = await pdf.getPage(pdfPageNum);
+        let viewport = page.getViewport({ scale: 1 });
+        const scale  = (viewport.width / viewport.height >= pagerat)
+                       ? pageWidth  / viewport.width
+                       : pageHeight / viewport.height;
+        viewport     = page.getViewport({ scale });
+        const os     = 3;
+        const canvas = document.getElementById(canvasId);
+        if (!canvas) continue;
+        canvas.width   = Math.floor(viewport.width  * os);
+        canvas.height  = Math.floor(viewport.height * os);
+        canvas.style.width  = Math.floor(viewport.width)  + 'px';
+        canvas.style.height = Math.floor(viewport.height) + 'px';
+        page.render({ canvasContext: canvas.getContext('2d'), transform: [os,0,0,os,0,0], viewport });
+      }
+    }
+
+
   })();
 }
 
@@ -400,14 +456,35 @@ function arrangeZineSheets() {
   const zineEl = document.getElementById('zine');
   zineEl.innerHTML = '';
 
-  if (pageCount % 4 !== 0) pageCount += 4 - (pageCount % 4);
+  // This was related to adding padding pages
+  // if (pageCount % 4 !== 0){
+  //   pageCount = pageCount+(4 - (pageCount % 4));
+  // }
 
   let html = '';
   const rot = ' rotate';
 
+  ///////////////////STH-0319-2026
+  // Determine if we have an insert situation
+  const hasInsert = (pageCount % 4 === 2);
+  let bookletCount;
+
+  if (hasInsert){
+    bookletCount = pageCount - 2;
+  }else{
+    bookletCount = pageCount;
+  }
+
+  // console.log(hasInsert);
+  // console.log(pageCount);
+  // console.log(bookletCount);
+
   if (zinePortrait) {
-    for (let i = 0; i < pageCount / 4; i++) {
-      const s = 2 * i, e = pageCount - s - 1;
+    let i = 0;
+    // while (i < pageCount / 4){
+    while (i < bookletCount / 4){
+      const s = 2 * i; //start index
+      const e = pageCount - s - 1; //end index
       html += `<section class="zine-sheet half-por" id="s${i*2}">
         <section class="zine-page tl"><canvas id="p${e}"></canvas></section>
         <section class="zine-page tr"><canvas id="p${s}"></canvas></section>
@@ -416,21 +493,26 @@ function arrangeZineSheets() {
         <section class="zine-page tl"><canvas id="p${s+1}"></canvas></section>
         <section class="zine-page tr"><canvas id="p${e-1}"></canvas></section>
       </section>`;
+      i++;
     }
-  } else {
-    for (let i = 0; i < pageCount / 4; i++) {
-      const s     = 2 * i, e = pageCount - s - 1;
-      const bcRot = (i === 0 && !flipBackCover) ? rot : '';
-      html += `<section class="zine-sheet half-lnd" id="s${i}_a">
-        <section class="zine-page tl"><canvas id="p${s}"></canvas></section>
-        <section class="zine-page tr${bcRot}"><canvas id="p${e}"></canvas></section>
+    if (hasInsert) {
+      let bookletCount;
+      bookletCount = pageCount - 2;
+      const mid1 = (pageCount / 2 - 1);
+      const mid2 = (pageCount / 2);
+      // Front of insert: mid2 | mid1
+      html += `<section class="zine-sheet half-por" id="ins_front">
+        <section class="zine-page tl"><canvas id="p${mid2}"></canvas></section>
+        <section class="zine-page tr"><canvas id="p${mid1}"></canvas></section>
       </section>`;
-      html += `<section class="zine-sheet half-lnd" id="s${i}_b">
-        <section class="zine-page tl${rot}"><canvas id="p${s+1}"></canvas></section>
-        <section class="zine-page tr${rot}"><canvas id="p${e-1}"></canvas></section>
+      // Back of insert: mid1 | mid2
+      html += `<section class="zine-sheet half-por" id="ins_back">
+        <section class="zine-page tl"><canvas id="p${mid2}b"></canvas></section>
+        <section class="zine-page tr"><canvas id="p${mid1}b"></canvas></section>
       </section>`;
     }
-  }
+
+  } 
 
   zineEl.innerHTML = html;
   // zineEl.innerHTML = '<div style="display:inline-block;text-align:left">' + html + '</div>';
