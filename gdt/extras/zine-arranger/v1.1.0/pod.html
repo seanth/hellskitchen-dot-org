@@ -81,22 +81,13 @@ hr { margin: 8px 0; }
 }
 
 @media print {
+  @page { size: landscape; margin: 0; }
   .noprint { display: none !important; }
-  body { margin: 0; }
-  /*@page { margin: 0; bleed: 0; }*/
-  @page { margin: 0;}
-  .zine-sheet { width: 100vw; height: 100vh; float: left; page-break-after: always; page-break-inside: avoid; }
-  .zine-page  { background: #fff; }
-  /*#zine canvas { width: 100vw !important; height: 100vh !important; object-fit: contain; display: block; margin: 0; page-break-after: avoid; }*/
-  /*#zine canvas { width: 100vw !important; height: 100vh !important; object-fit: contain; display: block; float: left; margin: 0; page-break-after: avoid; }*/
-  /*#zine::after { content: ''; display: block; clear: both; }*/
+  .zine-sheet { width: var(--print-sheet-width); height: 8.5in; float: left; page-break-after: always; page-break-inside: avoid; transform: none !important; margin: 0 !important; }
+  .zine-page { width: calc(var(--print-sheet-width) / 2); height: 8.5in; }
+  .zine-page canvas { width: calc(var(--print-sheet-width) / 2) !important; height: 8.5in !important; object-fit: contain; }
   #zine { margin: 0; padding: 0; vertical-align: top; }
-  /*#zine canvas { width: 100vw !important; height: 100vh !important; object-fit: contain; display: block; float: left; margin: 0; }*/
-  /*#zine canvas { width: 100vw !important; height: 100vh !important; object-fit: contain; display: block; float: left; margin: 0; border: 0 !important; vertical-align: top; page-break-after: avoid;}*/
-  /*#zine canvas { width: 100vw !important; height: 100vh !important; object-fit: contain; display: block; margin: 0; border: 0 !important; vertical-align: top; }*/
-  /*#zine canvas { width: 97vw !important; height: 97vh !important; object-fit: contain; display: block; margin: 0; border: 0 !important; vertical-align: top; }*/
   #zine canvas { width: var(--canvas-print-size) !important; height: var(--canvas-print-height) !important; object-fit: contain; display: block; margin: 0; border: 0 !important; vertical-align: top; }
-
 }
 </style>
 <style id="page-orient-style"></style>
@@ -108,6 +99,9 @@ hr { margin: 8px 0; }
   
   <center><h1>Gracies Dinnertime Theatre's<br>
   Print-on-demander</h1></center>
+  <p id="safari-warning" style="display:none; color:red">
+    <b>Safari users:</b> We have been unable to get this tool to fully work correctly with Safari. For some reason Safari is not respecting css settings. Please use a different browser.
+  </p>
   <p>Select an issue from the archive below to arrange it as a printable booklet.</p>
   <hr>
 
@@ -136,25 +130,29 @@ hr { margin: 8px 0; }
       •Volume 1: 8.5x11 sheets<br>
       •Volume 2-33: 8.5x14 booklet<br> 
       •Volume 34-present: 8.5x11 booklet<br> -->
-      <b>Paper:</b>
-      <button onclick="setPageUSLetter()">US Letter</button>
-      <button onclick="setPageLegal()">Legal</button>
+      <!-- hide these options. will only have 8.5x11-->
+      <!-- <b>Paper:</b> -->
+      <button onclick="setPageUSLetter()" style="display:none">US Letter</button>
+      <button onclick="setPageLegal()" style="display:none">Legal</button>
       &nbsp;
-      <input type="number" id="rt-width"  min="0.25" max="1100" value="8.5" onchange="refreshSpecs()" style="width:55px">
-      <span id="rt-width-label">W</span>
-      &times;
-      <input type="number" id="rt-height" min="0.25" max="1100" value="11"  onchange="refreshSpecs()" style="width:55px">
-      <span id="rt-height-label">H</span>
-      inches
+      <input type="number" id="rt-width"  min="0.25" max="1100" value="8.5" onchange="refreshSpecs()" style="width:55px;display:none">
+      <span id="rt-width-label" style="display:none">W</span>
+      <!-- &times; -->
+      <input type="number" id="rt-height" min="0.25" max="1100" value="11"  onchange="refreshSpecs()" style="width:55px;display:none">
+      <span id="rt-height-label" style="display:none">H</span>
+      <!-- inches -->
       <!-- <label><input type="radio" name="page-unit" id="page-inches" checked onchange="refreshSpecs()"> in</label>
       <label><input type="radio" name="page-unit" id="page-mm"           onchange="refreshSpecs()"> mm</label> -->
       <input type="radio" name="page-unit" id="page-inches" checked style="display:none">
       <input type="radio" name="page-unit" id="page-mm" style="display:none">
     </p>
-    <p style="margin-top:6px">
+<!--     <p style="margin-top:6px">
       <span id="lbl-pc-mult"></span>
       &nbsp;&nbsp;
       <span id="folding-ins"></span>
+    </p> -->
+    <p id="firefox-warning" style="display:none; color:red">
+      <b>Firefox users:</b> When printing, please set Margins to <b>None</b> in the print dialog. You may also need to change the scale. Just changing the scale and changing it back makes the pages render correctly. We're not sure why.
     </p>
     <p style="margin-top:6px"><button onclick="window.print()">Print / Save as PDF</button></p>
     <!-- <p style="margin-top:6px"><button onclick="smallPageMode ? window.open(currentPdfUrl, '_blank') : window.print()">Print / Save as PDF</button></p> -->
@@ -172,6 +170,16 @@ hr { margin: 8px 0; }
 //  ARCHIVE CONSTANTS
 const ARCHIVE_BASE = 'https://hellskitchen.org/gdt/PDF/';
 //const ARCHIVE_BASE = 'PDF/';
+
+const isSafari = /^((?!chrome|android).)*safari/i.test(navigator.userAgent);
+if (isSafari) {
+  document.getElementById('safari-warning').style.display = 'block';
+}
+const isFirefox = navigator.userAgent.toLowerCase().indexOf('firefox') > -1;
+if (isFirefox) {
+  document.getElementById('firefox-warning').style.display = 'block';
+}
+
 
 // State
 var currentPdfUrl  = null;
@@ -345,7 +353,8 @@ function selectFile() {
         }
       }
       // window.smallPageMode = true;
-      document.getElementById('page-orient-style').textContent = '@page { size: portrait; }';
+      // document.getElementById('page-orient-style').textContent = '@page { size: portrait; }';
+      document.getElementById('page-orient-style').textContent = '@media print { @page { size: portrait; } }';
       document.documentElement.style.setProperty('--canvas-print-size', '97vw');
       document.documentElement.style.setProperty('--canvas-print-height', '97vh');
       return;
@@ -478,7 +487,10 @@ function refreshSpecs() {
   pageWidth   = Math.floor(sheetWidth  / divHoriz);
   pageHeight  = Math.floor(sheetHeight / divVert);
 
+  const pgunit = document.getElementById('page-mm').checked ? 'mm' : 'in';
   const rt = document.querySelector(':root');
+  rt.style.setProperty('--print-sheet-width', aspectWidth + pgunit);
+  rt.style.setProperty('--print-sheet-height', aspectHeight + pgunit);
   rt.style.setProperty('--sheet-width',  sheetWidth  + 'px');
   rt.style.setProperty('--sheet-height', sheetHeight + 'px');
   rt.style.setProperty('--page-width',   pageWidth   + 'px');
@@ -487,8 +499,8 @@ function refreshSpecs() {
   const scaledHeight = Math.floor(sheetHeight * (550 / sheetWidth));
   rt.style.setProperty('--sheet-margin-bottom', (scaledHeight - sheetHeight + 12) + 'px');
 
-  document.getElementById('page-orient-style').textContent =
-    '@page { size: ' + (pagePortrait ? 'portrait' : 'landscape') + '; }';
+  // document.getElementById('page-orient-style').textContent ='@page { size: ' + (pagePortrait ? 'portrait' : 'landscape') + '; }';
+  document.getElementById('page-orient-style').textContent = '@media print { @page { size: ' + (pagePortrait ? 'portrait' : 'landscape') + '; } }';
 
   selectFile();
 }
