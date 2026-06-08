@@ -1,0 +1,280 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta name="DESCRIPTION" content="Cereal Magazine: Serial and Short fiction, poetry, prose and essays.">
+  <meta charset="UTF-8">
+  <title>CEREAL MAGAZINE - Stories by Author</title>
+  <style>
+    body { background-color: #000000; font-family: Arial, sans-serif; }
+    a:link    { color: #555555; }
+    a:visited { color: #551a8b; }
+    a:active  { color: #ff0000; }
+
+    /* Minimal helpers that would be tedious to do with pure HTML attributes */
+    .index-bar  { background-color: #cccccc; text-align: center; padding: 4px; }
+    .bio-block  { display: none; margin-top: 6px; border-left: 3px solid #cccccc; padding-left: 8px; }
+    .serial-list { margin-left: 20px; }
+  </style>
+</head>
+<body>
+
+
+<table width=100% border="0" cellspacing="0" cellpadding="6">
+  <tr>
+    <td bgcolor="#000000">
+      <table width="100%" border="0" cellspacing="0" cellpadding="6">
+        <tr>
+          <td bgcolor="#ffffff">
+
+            <center>
+              <b><font size="+4" face="Arial">STORIES SORTED BY AUTHOR</font></b><p>
+              <b><font size="-1" face="Arial">Authors and artists make great conversation pieces! Invite one to attend your next function or soirée!</font></b>
+            </center>
+
+            <p>
+            <!-- Alphabetical index bar — built by JS -->
+            <table width="100%" border="0" cellspacing="2" cellpadding="0">
+              <tr>
+                <td class="index-bar">
+                  <font face="Arial"><hr id="top-rule">
+                  <b><span id="author-index">Loading...</span></b>
+                  <hr></font>
+                </td>
+              </tr>
+            </table>
+            </p>
+
+            <!-- Author entries inserted here by JS -->
+            <div id="author-list"></div>
+
+            
+          </td>
+        </tr>
+      </table>
+    </td>
+  </tr>
+</table>
+</center>
+
+<!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.4.1/papaparse.min.js"></script> -->
+<script src="papaparse.min.js"></script>
+<script>
+// ─── Configuration ───────────────────────────────────────────────────────────
+const CSV_PATH = "Story-author.csv";
+
+// ─── Utilities ───────────────────────────────────────────────────────────────
+
+// Sort authors by last name, falling back to full name if no space found
+function lastNameSort(a, b) {
+  function lastName(name) {
+    var parts = name.trim().split(/\s+/);
+    return parts[parts.length - 1].toLowerCase();
+  }
+  var la = lastName(a), lb = lastName(b);
+  if (la < lb) return -1;
+  if (la > lb) return 1;
+  return 0;
+}
+
+// Return the first letter of the last name for index grouping
+function lastInitial(name) {
+  var parts = name.trim().split(/\s+/);
+  return parts[parts.length - 1][0].toUpperCase();
+}
+
+// Safe HTML — escape user-supplied strings
+function esc(str) {
+  return str.replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;");
+}
+
+// ─── Build page from parsed rows ─────────────────────────────────────────────
+function buildPage(rows) {
+
+  // Group rows by author name (preserving case)
+  var authorMap = {};
+  var authorOrder = [];
+  rows.forEach(function(row) {
+    var author = (row.author || "").trim();
+    if (!author) return;
+    if (!authorMap[author]) {
+      authorMap[author] = [];
+      authorOrder.push(author);
+    }
+    authorMap[author].push(row);
+  });
+
+  // Sort authors by last name
+  authorOrder.sort(lastNameSort);
+
+  // ── Build alphabetical index bar ─────────────────────────────────────────
+  // Collect unique initials in the order they appear after sorting
+  var seen = {};
+  var indexLinks = [];
+  authorOrder.forEach(function(author) {
+    var initial = lastInitial(author);
+    if (!seen[initial]) {
+      seen[initial] = true;
+      indexLinks.push(
+        '<a href="#author-' + esc(initial) + '">' + esc(initial) + '</a>'
+      );
+    }
+  });
+  document.getElementById("author-index").innerHTML = indexLinks.join(" - ");
+
+  // ── Build author sections ─────────────────────────────────────────────────
+  var html = "";
+  var currentInitial = "";
+
+  authorOrder.forEach(function(author) {
+    var entries = authorMap[author];
+    var initial  = lastInitial(author);
+
+    // Invisible anchor at each new initial for the index bar links
+    if (initial !== currentInitial) {
+      currentInitial = initial;
+      html += '<a name="author-' + esc(initial) + '"></a>';
+    }
+
+    // Author-level anchor (by last name, lowercased, spaces stripped)
+    var anchorId = "author-" + author.trim().split(/\s+/).pop().toLowerCase();
+    html += '<a name="' + esc(anchorId) + '"></a>';
+
+    // ── Author heading ────────────────────────────────────────────────────
+    // Check whether any entry has a bio
+    var bioText = "";
+    entries.forEach(function(r) { if ((r.bio || "").trim()) bioText = r.bio.trim(); });
+
+    if (bioText) {
+      // Author name is a toggle link
+      html += '<p><b><font size="+1" face="Arial">' + esc(author) +
+              ' - (<a href="#" onclick="toggleBio(\'' + esc(anchorId) + '\');return false;">bio</a>)' +
+              '</font></b></p>';
+      html += '<div class="bio-block" id="bio-' + esc(anchorId) + '">' +
+              '<font face="Arial">' + esc(bioText) + '</font></div>';
+    } else {
+      html += '<p><b><font size="+1" face="Arial">' + esc(author) + '</font></b></p>';
+    }
+
+    // ── Group this author's entries by serial_name ────────────────────────
+    var serials  = {}; // serial_name -> array of rows, sorted by serial_part
+    var standalones = [];
+
+    entries.forEach(function(row) {
+      var sname = (row.serial_name || "").trim();
+      if (sname) {
+        if (!serials[sname]) serials[sname] = [];
+        serials[sname].push(row);
+      } else {
+        standalones.push(row);
+      }
+    });
+
+    // Sort each serial's parts numerically
+    Object.keys(serials).forEach(function(sname) {
+      serials[sname].sort(function(a, b) {
+        return parseInt(a.serial_part || 0, 10) - parseInt(b.serial_part || 0, 10);
+      });
+    });
+
+    html += "<blockquote>";
+
+    // ── Standalone works ──────────────────────────────────────────────────
+    standalones.forEach(function(row) {
+      html += renderStoryLine(row, false);
+    });
+
+    // ── Serialized works ─────────────────────────────────────────────────
+    Object.keys(serials).forEach(function(sname) {
+      var parts = serials[sname];
+      // Serial heading — use first row for source info
+      var first = parts[0];
+      html += '<p><b><font face="Arial">' + esc(sname) + '</font></b>';
+      if ((first.source_label || "").trim()) {
+        html += '<font color="#000000" face="Arial"> — ';
+        if ((first.source_link || "").trim()) {
+          html += '<a href="' + esc(first.source_link.trim()) + '">' +
+                  esc(first.source_label.trim()) + '</a>';
+        } else {
+          html += esc(first.source_label.trim());
+        }
+        html += '</font>';
+      }
+      html += '</p>';
+
+      // Individual parts
+      html += '<div class="serial-list">';
+      parts.forEach(function(row) {
+        html += renderStoryLine(row, true);
+      });
+      html += '</div>';
+    });
+
+    html += "</blockquote>";
+    html += "<p>&nbsp;</p>";
+  });
+
+  document.getElementById("author-list").innerHTML = html;
+}
+
+// ─── Render a single story line ───────────────────────────────────────────────
+function renderStoryLine(row, isSeriaPart) {
+  var title      = (row.title       || "").trim();
+  var blurb      = (row.blurb       || "").trim();
+  var srcLabel   = (row.source_label|| "").trim();
+  var srcLink    = (row.source_link || "").trim();
+
+  var out = "<p>";
+
+  // Title — linked if we have a source_link, plain if not
+  if (srcLink) {
+    out += '<a href="' + esc(srcLink) + '" target="_blank"><b><font face="Arial">' +
+           esc(title) + '</font></b></a>';
+  } else {
+    out += '<b><font face="Arial">' + esc(title) + '</font></b>';
+  }
+
+  // Source label — only shown on standalone or serial-part lines (not on serial heading)
+  // For serial parts we skip source since it's shown on the serial heading
+  if (!isSeriaPart && srcLabel) {
+    out += '<font color="#000000" face="Arial"> — ';
+    if (srcLink) {
+      out += '<a href="' + esc(srcLink) + '">' + esc(srcLabel) + '</a>';
+    } else {
+      out += esc(srcLabel);
+    }
+    out += '</font>';
+  }
+
+  // Blurb
+  if (blurb) {
+    out += '<b><font color="#000000" face="Arial"> - ' + esc(blurb) + '</font></b>';
+  }
+
+  out += "</p>";
+  return out;
+}
+
+// ─── Bio toggle ──────────────────────────────────────────────────────────────
+function toggleBio(anchorId) {
+  var el = document.getElementById("bio-" + anchorId);
+  if (!el) return;
+  el.style.display = (el.style.display === "block") ? "none" : "block";
+}
+
+// ─── Load CSV and kick off ────────────────────────────────────────────────────
+Papa.parse(CSV_PATH, {
+  download: true,
+  header: true,
+  skipEmptyLines: true,
+  complete: function(results) {
+    buildPage(results.data);
+  },
+  error: function(err) {
+    document.getElementById("author-list").innerHTML =
+      "<p><font face='Arial' color='red'>Could not load author data: " + err.message + "</font></p>";
+  }
+});
+</script>
+
+</body>
+</html>

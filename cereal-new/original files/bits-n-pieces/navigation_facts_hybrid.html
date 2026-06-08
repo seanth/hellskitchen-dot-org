@@ -1,0 +1,173 @@
+<div style="background:#fff; padding: 16px;">
+
+<script>
+var browser=false;
+var selecti = 1;
+if(document.images) browser=true;
+
+function objectdata(replaceimg,restoreimg,mess){
+  if(browser){
+    this.mess=mess;
+    this.simg=new Image(); this.simg.src=replaceimg;
+    this.rimg=new Image(); this.rimg.src=restoreimg;
+  }
+}
+
+if(browser){
+  var object=new Array();
+  object['n1']=new objectdata("images/ohh.gif","images/ohh.gif","The Best Stories!");
+  object['n2']=new objectdata("images/spoon.gif","images/space.gif","Get the Latest Now!");
+  object['n3']=new objectdata("images/spoon.gif","images/space.gif","Includes Biographies!");
+  object['n4']=new objectdata("images/spoon.gif","images/space.gif","Serial and short stories, essays & poetry");
+  object['n5']=new objectdata("images/spoon.gif","images/space.gif","History of Cereal");
+  object['n6']=new objectdata("images/spoon.gif","images/space.gif","Email updates & Print Subscriptions!");
+  object['n8']=new objectdata("images/spoon.gif","images/space.gif","It's easy! You'll get stuff!");
+  object['n9']=new objectdata("images/spoon.gif","images/space.gif","Tell us what you think!");
+}
+
+function CurrentPage(selecti){
+  if(browser){
+    object['n1']=new objectdata("images/spoon.gif","images/space.gif","The Best Stories!");
+    object['n2']=new objectdata("images/spoon.gif","images/space.gif","Get the Latest Now!");
+    object['n3']=new objectdata("images/spoon.gif","images/space.gif","Includes Biographies!");
+    object['n4']=new objectdata("images/spoon.gif","images/space.gif","Serial and short stories, essays & poetry");
+    object['n5']=new objectdata("images/spoon.gif","images/space.gif","History of Cereal");
+    object['n6']=new objectdata("images/spoon.gif","images/space.gif","Email updates & Print Subscriptions!");
+    object['n8']=new objectdata("images/spoon.gif","images/space.gif","It's easy! You'll get stuff!");
+    object['n9']=new objectdata("images/spoon.gif","images/space.gif","Tell us what you think!");
+    if(selecti==1){object['n1']=new objectdata("images/ohh.gif","images/ohh.gif","Current Page");} RestoreOrig("n1");
+    if(selecti==2){object['n2']=new objectdata("images/ohh.gif","images/ohh.gif","Current Page");} RestoreOrig("n2");
+    if(selecti==3){object['n3']=new objectdata("images/ohh.gif","images/ohh.gif","Current Page");} RestoreOrig("n3");
+    if(selecti==4){object['n4']=new objectdata("images/ohh.gif","images/ohh.gif","Current Page");} RestoreOrig("n4");
+    if(selecti==5){object['n5']=new objectdata("images/ohh.gif","images/ohh.gif","Current Page");} RestoreOrig("n5");
+    if(selecti==6){object['n6']=new objectdata("images/ohh.gif","images/ohh.gif","Current Page");} RestoreOrig("n6");
+    if(selecti==8){object['n8']=new objectdata("images/ohh.gif","images/ohh.gif","Current Page");} RestoreOrig("n8");
+    if(selecti==9){object['n9']=new objectdata("images/ohh.gif","images/ohh.gif","Current Page");} RestoreOrig("n9");
+  }
+}
+
+function ReplaceOrig(name){
+  if(browser){
+    window.status=object[name].mess;
+    document.images[name].src=object[name].simg.src;
+  }
+}
+
+function RestoreOrig(name){
+  if(browser){
+    window.status="";
+    document.images[name].src=object[name].rimg.src;
+  }
+}
+</script>
+
+<center>
+<table width="141" border="0" cellspacing="0" cellpadding="0">
+  <tbody><tr>
+    <td width="100%" bgcolor="#000000">
+
+      <div style="font-family: Arial, Helvetica, sans-serif; color: white; padding: 4px 6px 2px 6px;">
+        <div style="font-size: 22px; font-weight: 900; line-height: 1; color: white;">Navigation</div>
+        <div style="font-size: 22px; font-weight: 900; line-height: 1; color: white;">Facts</div>
+        <div style="border-top: 8px solid white; margin: 3px 0;"></div>
+      </div>
+
+      <table width="138" border="0" cellspacing="0" cellpadding="0" style="margin: 0 auto;">
+
+        <tr>
+          <td style="border-top: 0px solid white;">
+            <a href="Stories/editorchoice.html" target="frame294387"
+               onmouseover="ReplaceOrig('n1');return true;"
+               onmouseout="RestoreOrig('n1');"
+               onclick="CurrentPage(1);"
+               style="display:flex; align-items:center; text-decoration:none; color:white; font-family:Arial,sans-serif; font-size:13px; font-weight:700; padding: 3px 4px;">
+              <span style="display:inline-block; width:106px;">Articles &amp; Stories</span>
+              <img src="images/ohh.gif" name="n1" width="32" height="32" border="0">
+            </a>
+          </td>
+        </tr>
+
+        <tr><td style="border-top: 1px solid white;">
+          <a href="stories-date8.html" target="frame294387"
+             onmouseover="ReplaceOrig('n2');return true;"
+             onmouseout="RestoreOrig('n2');"
+             onclick="CurrentPage(2);"
+             style="display:flex; align-items:center; text-decoration:none; color:white; font-family:Arial,sans-serif; font-size:12px; padding: 3px 4px; padding-left:14px;">
+            <span style="display:inline-block; width:92px;">sorted by Date......</span>
+            <img src="images/space.gif" name="n2" width="32" height="32" border="0">
+          </a>
+        </td></tr>
+
+        <tr><td style="border-top: 1px solid white;">
+          <a href="Story-author.html" target="frame294387"
+             onmouseover="ReplaceOrig('n3');return true;"
+             onmouseout="RestoreOrig('n3');"
+             onclick="CurrentPage(3);"
+             style="display:flex; align-items:center; text-decoration:none; color:white; font-family:Arial,sans-serif; font-size:12px; padding: 3px 4px; padding-left:14px;">
+            <span style="display:inline-block; width:92px;">sorted by Author...</span>
+            <img src="images/space.gif" name="n3" width="32" height="32" border="0">
+          </a>
+        </td></tr>
+
+        <tr><td style="border-top: 1px solid white;">
+          <a href="stories-type.html" target="frame294387"
+             onmouseover="ReplaceOrig('n4');return true;"
+             onmouseout="RestoreOrig('n4');"
+             onclick="CurrentPage(4);"
+             style="display:flex; align-items:center; text-decoration:none; color:white; font-family:Arial,sans-serif; font-size:12px; padding: 3px 4px; padding-left:14px;">
+            <span style="display:inline-block; width:92px;">sorted by Type......</span>
+            <img src="images/space.gif" name="n4" width="32" height="32" border="0">
+          </a>
+        </td></tr>
+
+        <tr><td style="border-top: 4px solid white;">
+          <a href="cerealfaq.html" target="frame294387"
+             onmouseover="ReplaceOrig('n5');return true;"
+             onmouseout="RestoreOrig('n5');"
+             onclick="CurrentPage(5);"
+             style="display:flex; align-items:center; text-decoration:none; color:white; font-family:Arial,sans-serif; font-size:13px; font-weight:700; padding: 3px 4px;">
+            <span style="display:inline-block; width:106px;">About Cereal.........</span>
+            <img src="images/space.gif" name="n5" width="32" height="32" border="0">
+          </a>
+        </td></tr>
+
+        <tr><td style="border-top: 4px solid white;">
+          <a href="cersubscr.html" target="frame294387"
+             onmouseover="ReplaceOrig('n6');return true;"
+             onmouseout="RestoreOrig('n6');"
+             onclick="CurrentPage(6);"
+             style="display:flex; align-items:center; text-decoration:none; color:white; font-family:Arial,sans-serif; font-size:13px; font-weight:700; padding: 3px 4px;">
+            <span style="display:inline-block; width:106px;">Subscribe.............</span>
+            <img src="images/space.gif" name="n6" width="32" height="32" border="0">
+          </a>
+        </td></tr>
+
+        <tr><td style="border-top: 4px solid white;">
+          <a href="cercontact.html" target="frame294387"
+             onmouseover="ReplaceOrig('n8');return true;"
+             onmouseout="RestoreOrig('n8');"
+             onclick="CurrentPage(8);"
+             style="display:flex; align-items:center; text-decoration:none; color:white; font-family:Arial,sans-serif; font-size:13px; font-weight:700; padding: 3px 4px;">
+            <span style="display:inline-block; width:106px;">Contact Us............</span>
+            <img src="images/space.gif" name="n8" width="32" height="32" border="0">
+          </a>
+        </td></tr>
+
+        <tr><td style="border-top: 4px solid white;">
+          <a href="guestbook.html" target="frame294387"
+             onmouseover="ReplaceOrig('n9');return true;"
+             onmouseout="RestoreOrig('n9');"
+             onclick="CurrentPage(9);"
+             style="display:flex; align-items:center; text-decoration:none; color:white; font-family:Arial,sans-serif; font-size:13px; font-weight:700; padding: 3px 4px;">
+            <span style="display:inline-block; width:106px;">Sign Guest Book....</span>
+            <img src="images/space.gif" name="n9" width="32" height="32" border="0">
+          </a>
+        </td></tr>
+
+      </table>
+      <div style="height:4px;"></div>
+    </td>
+  </tr></tbody>
+</table>
+</center>
+</div>

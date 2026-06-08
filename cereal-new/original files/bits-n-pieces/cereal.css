@@ -1,0 +1,41 @@
+A:link {
+	color: red;
+	text-decoration: none
+}
+
+A:visited {
+	color: purple;
+	text-decoration: none
+}
+
+A:active {
+	color: purple;
+	text-decoration: none
+} 
+
+A:hover {
+	color: purple;
+	text-decoration: underline
+} 
+
+/*
+     FILE ARCHIVED ON 23:27:38 May 04, 2006 AND RETRIEVED FROM THE
+     INTERNET ARCHIVE ON 16:58:33 May 19, 2026.
+     JAVASCRIPT APPENDED BY WAYBACK MACHINE, COPYRIGHT INTERNET ARCHIVE.
+
+     ALL OTHER CONTENT MAY ALSO BE PROTECTED BY COPYRIGHT (17 U.S.C.
+     SECTION 108(a)(3)).
+*/
+/*
+playback timings (ms):
+  capture_cache.get: 0.443
+  captures_list: 1.406
+  exclusion.robots: 0.987
+  exclusion.robots.policy: 0.036
+  esindex: 0.008
+  cdx.remote: 45.213
+  LoadShardBlock: 241.13 (3)
+  PetaboxLoader3.datanode: 128.082 (4)
+  PetaboxLoader3.resolve: 150.473 (2)
+  load_resource: 153.319
+*/
