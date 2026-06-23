@@ -1,0 +1,84 @@
+<html>
+<head>
+<title>This is the table of contents, you assmuncher</title>
+</head>
+
+<body text="01009c" link="3f2f4f" vlink="6b4426" background="../images/bg/backround.jpg">
+<center>
+<img src="../images/titles/smalovin.jpg" width="100%"><hr>
+
+<script language="JavaScript">
+
+
+     browserName = navigator.appName;
+     browserVer = parseInt(navigator.appVersion);
+             if (browserName == "Netscape" && browserVer >= 3) version = "n3";
+             else version = "n2";
+             
+             if (version == "n3") {
+             toc1on = new Image();
+             toc1on.src = "../images/sidebars/bjustBacon2.gif";
+             toc2on = new Image();
+             toc2on.src = "../images/sidebars/bcntst2.gif";
+             toc3on = new Image();
+             toc3on.src = "../images/sidebars/bedtl2.gif";
+             toc4on = new Image();
+             toc4on.src = "../images/sidebars/barts2.gif";
+             toc5on = new Image();
+             toc5on.src = "../images/sidebars/bobwm2.gif";            
+             toc6on = new Image();
+             toc6on.src = "../images/sidebars/bus2.gif";
+             toc7on = new Image();
+             toc7on.src = "../images/sidebars/bjustBacon2.gif";
+             toc1off = new Image();
+             toc1off.src = "../images/sidebars/front2.gif";
+             toc2off = new Image();
+             toc2off.src = "../images/sidebars/cntst2.gif";
+             toc3off = new Image();
+             toc3off.src = "../images/sidebars/edtl2.gif";
+             toc4off = new Image();
+             toc4off.src = "../images/sidebars/arts2.gif";
+             toc5off = new Image();
+             toc5off.src = "../images/sidebars/obwm2.gif";
+             toc6off = new Image();
+             toc6off.src = "../images/sidebars/us2.gif";
+             toc7off = new Image();
+             toc7off.src = "../images/sidebars/justPig.gif";
+                          }
+
+     function img_act(imgName) {
+             if (version == "n3") {
+             imgOn = eval(imgName + "on.src");
+             document [imgName].src = imgOn;
+             }
+     }
+
+     function img_inact(imgName) {
+             if (version == "n3") {
+             imgOff = eval(imgName + "off.src");
+             document [imgName].src = imgOff;     
+             }
+     }
+     
+     
+
+
+</script>
+
+
+<a href="main.html" target="bigfat" onmouseover="img_act('toc1'); window.status='Go here First'; return true" onmouseout="img_inact('toc1'); window.status=''; return true" "><img name="toc1" src="../images/sidebars/front2.gif" alt="It's BACON!!!" width="100%" border="0"></a><br>
+
+<a href="contest/cntst.html" target="bigfat" onmouseover="img_act('toc2'); window.status='Our CRAZY contest page!!! -WOW!'; return true" onmouseout="img_inact('toc2'); window.status=''; return true"><img name="toc2" src="../images/sidebars/cntst2.gif" alt="There's a crazy new contest every issue!" width="100%" border="0"></a><br>
+
+<a href="edit/edit.html" target="bigfat" onmouseover="img_act('toc3');window.status='Editorial Humor and questions answered'; return true" onmouseout="img_inact('toc3'); window.status=''; return true"><img name="toc3" src="../images/sidebars/edtl2.gif" alt="Editorial Humor and questions answered" width="100%" border="0"></a><br>
+
+<a href="art/art.html" target="bigfat" onmouseover="img_act('toc4');window.status='The finest collection of pictoral essays of sex with animals on the internet'; return true" onmouseout="img_inact('toc4'); window.status=''; return true"><img name="toc4" src="../images/sidebars/arts2.gif" alt="You know, artsy crap." width="100%" border="0"></a><br>
+
+<a href="obwm/obwm.html" target="bigfat" onmouseover="img_act('toc5');window.status='The Official Bureau of Weights and Measures'; return true" onmouseout="img_inact('toc5'); window.status=''; return true"><img name="toc5" src="../images/sidebars/obwm2.gif" alt="The Official Bureau of Weights and Measures" width="100%" border="0"></a><br>
+
+<a href="us.html" target="bigfat" onmouseover="img_act('toc6');window.status='You know, its a page about us guys.'; return true" onmouseout="img_inact('toc6'); window.status=''; return true"><img name="toc6" src="../images/sidebars/us2.gif" alt="A page about us!" width="100%" border="0"></a><br>
+
+<a href="sub.html" target="bigfat" onmouseover="img_act('toc7');window.status='Submit your questions or articles'; return true" onmouseout="img_inact('toc7'); window.status=''; return true"><img name="toc7" src="../images/sidebars/justPig.gif" alt="Submit your questions or articles" width="100%" border="0"></a>
+
+</body>
+</html>
