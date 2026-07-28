@@ -227,7 +227,7 @@ function renderStoryLine(row, isSeriaPart) {
 
   // Title — linked if we have a source_link, plain if not
   if (srcLink) {
-    out += '<a href="' + esc(srcLink) + '" target="_blank"><b><font face="Arial">' +
+    out += '<a href="' + esc(srcLink) + '" target="_self"><b><font face="Arial">' +
            esc(title) + '</font></b></a>';
   } else {
     out += '<b><font face="Arial">' + esc(title) + '</font></b>';
