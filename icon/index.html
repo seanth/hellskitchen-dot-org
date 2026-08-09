@@ -1,110 +1,238 @@
-<html>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="The Iconoclast, a satirical zine produced at Rutgers University-Camden from 1996 to 1998.">
+<meta name="keywords" content="Iconoclast, zine, satire, Rutgers Camden, Hell's Kitchen, independent press, 1990s zine, college literary magazine">
+<meta property="og:title" content="The Iconoclast — zine archive">
+<meta property="og:description" content="Satirical zine from Rutgers University-Camden, 1996–1998. Archived by Hell's Kitchen.">
+<meta property="og:type" content="website">
+<meta name="robots" content="index, follow">
+<title>The Iconoclast — landing page mockup</title>
+<link rel="stylesheet" href="tabler-icons.min.css">
+<style>
+  :root {
+    --surface-0: #f7f6f2;
+    --surface-1: #ffffff;
+    --surface-2: #ffffff;
+    --border: #e4e2da;
+    --border-warning: #e8c98a;
+    --bg-warning: #faecd0;
+    --text-warning: #8a5a00;
+    --text-primary: #1c1c1a;
+    --text-secondary: #5f5e5a;
+    --text-muted: #8a8880;
+    --bg-success: #e6f3e6;
+    --text-success: #1f6b2e;
+    --radius: 8px;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    background: var(--surface-0);
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    color: var(--text-primary);
+    padding: 3rem 1.5rem;
+  }
+  .page {
+    max-width: 680px;
+    margin: 0 auto;
+    background: var(--surface-1);
+    border-radius: 12px;
+    padding: 1.5rem;
+    border: 0.5px solid var(--border);
+  }
+  .header-row {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 1.25rem;
+  }
+/*  .logo-slot {
+    width: 48px;
+    height: 48px;
+    border-radius: 8px;
+    background: var(--surface-0);
+    border: 0.5px solid var(--border);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+  }*/
+  .logo-slot i { font-size: 22px; color: var(--text-muted); }
+  h1 { margin: 0; font-size: 22px; font-weight: 600; }
+  .subtitle { font-size: 13px; color: var(--text-secondary); margin: 2px 0 0; }
+  .notice {
+    background: var(--bg-warning);
+    border: 0.5px solid var(--border-warning);
+    border-radius: var(--radius);
+    padding: 12px 16px;
+    margin-bottom: 1.5rem;
+  }
+  .notice-title { font-size: 13px; color: var(--text-warning); margin: 0; font-weight: 600; }
+  .notice-body { font-size: 13px; color: var(--text-secondary); margin: 4px 0 0; }
+  .accordion { display: flex; flex-direction: column; gap: 8px; }
+  .volume {
+    border: 0.5px solid var(--border);
+    border-radius: var(--radius);
+    overflow: hidden;
+  }
+  .volume-header {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 10px 14px;
+    background: var(--surface-0);
+    border: none;
+    cursor: pointer;
+    text-align: left;
+    font: inherit;
+    color: inherit;
+  }
+  .volume-header:hover { background: #f0efe9; }
+  .volume-header-left { display: flex; align-items: center; gap: 8px; }
+  .volume-icon { font-size: 16px; color: var(--text-secondary); }
+  .volume-name { font-size: 14px; font-weight: 600; }
+  .volume-season { font-size: 12px; color: var(--text-muted); }
+  .chevron { font-size: 16px; color: var(--text-secondary); transition: transform 0.15s; }
+  .volume-body {
+    display: none;
+    flex-direction: column;
+    gap: 6px;
+    padding: 10px 14px;
+  }
+  .volume-body.open { display: flex; }
+  .issue-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 6px 0;
+    border-top: 0.5px solid var(--border);
+  }
+  .issue-title { font-size: 13px; padding-right: 12px; }
+  .issue-title a { color: var(--text-primary); text-decoration: none; }
+  .issue-title a:hover { text-decoration: underline; }
+  .badge {
+    font-size: 12px;
+    padding: 2px 10px;
+    border-radius: var(--radius);
+    white-space: nowrap;
+    flex-shrink: 0;
+  }
+  .badge-pdf { background: var(--bg-success); color: var(--text-success); }
+  .badge-html { color: var(--text-muted); border: 0.5px solid var(--border); }
+  .badge i { font-size: 13px; vertical-align: -2px; margin-right: 4px; }
+  .footer {
+    border-top: 0.5px solid var(--border);
+    padding-top: 12px;
+    margin-top: 1.5rem;
+  }
+  .footer p { font-size: 12px; color: var(--text-muted); margin: 0; }
+</style>
+</head>
+<body>
 
-<title>The Iconoclast</title>
+<div class="page">
 
-<body bgcolor="#ffffff" text="#000000" link="#770077" 
+  <div class="header-row">
+    <!-- <div class="logo-slot"><i class="ti ti-photo"></i></div> -->
+    <div>
+      <img src="images/icon4.gif">
+      <!-- <h1>The Iconoclast</h1> -->
+      <p class="subtitle">A member publication of Hell's Kitchen, 1996&ndash;1998</p>
+    </div>
+  </div>
 
-vlink="#770077" alink="#770077">
+  <div class="notice">
+    <p class="notice-title">Archive notice</p>
+    <p class="notice-body">This site is an archive. Updated 2026: issues now link to PDFs where available.</p>
+  </div>
 
-<img src="icon4.gif"><p>
+  <div class="accordion" id="accordion"></div>
 
-<font size=-1>Please note: This site is an archive of <I>The Iconoclast's</I> original site at <A HREF="https://web.archive.org/web/19981206141124/http://clam.rutgers.edu/~p00h/iconoclast/">clam.rutgers.edu/~p00h/iconoclast</A>. Since <I>The Iconoclast</I> has <A HREF="bye.html">decided to leave Hell's Kitchen</A>, this site is finished. No new information will be added. If you'd like to read new issues, however, please feel free to visit their new site at <A HREF="https://web.archive.org/web/20050409181110/http://iconoclast.iwarp.com/"><strike>http://members.xoom.com/Makeitnew/iconoclast.html</strike> iconoclast.iwarp.com</A>
-<p>
-<dd>-C. Diablo, Hell's Kitchen</font size><p>
+  <div class="footer">
+    <p>Original site: <a href="https://web.archive.org/web/19981206141124/http://clam.rutgers.edu/%7Ep00h/iconoclast/">clam.rutgers.edu/~p00h/iconoclast</a></p>
+    <p>Post Hell's Kitchen membership site: <a href="https://web.archive.org/web/20050409181110/http://iconoclast.iwarp.com/">iconoclast.iwarp.com</a>
+    </p>
+  </p>
+  <p>Copyright 1996-1998</p>
+  </div>
 
-<hr>
+</div>
 
-<I>The Iconoclast</I> is dedicated to the advancement of the intellect
+<script>
+const volumes = [
+  { name: "Volume 1", season: "Fall 1996", icon: "ti-leaf", issues: [
+    { title: "Issue 1 — Your guide to instant teaching certification", fmt: "pdf", url: "pdfs/volume1/Iconoclast-v1i1.pdf" },
+    { title: "Issue 2 — Treks on the Beach", fmt: "pdf", url: "pdfs/volume1/Iconoclast-v1i2.pdf" },
+    { title: "Issue 3 — Boys will be boys, girls will be gods", fmt: "html", url: "html/icon6.html" },
+    { title: "Issue 4 — Goth chicks of the world unite!", fmt: "html", url: "html/icon8.html" },
+    { title: "Halloween special", fmt: "html", url: "html/hallow1.html" }
+  ]},
+  { name: "Volume 2", season: "Spring 1997", icon: "ti-flower", issues: [
+    { title: "Issue 1 — Intellectual barbarism", fmt: "pdf", url: "pdfs/volume2/Iconoclast-v2i1.pdf" },
+    { title: "Issue 2 – Where we torture words in the spirit of modernism", fmt: "pdf", url: "pdfs/volume2/Iconoclast-v2i2.pdf" },
+    { title: "Issue 3 – Special Summer Issue 1", fmt: "pdf", url: "pdfs/volume2/Iconoclast-v2i3.pdf" },
+    { title: "Issue 4 – Special Summer Issue 2", fmt: "pdf", url: "pdfs/volume2/Iconoclast-v2i4.pdf" }
+  ]},
+  { name: "Volume 3", season: "Fall 1997", icon: "ti-leaf", issues: [
+    { title: "Issue 1 — An Iconoclast manifesto is borne", fmt: "pdf", url: "pdfs/volume3/Iconoclast-v3i1.pdf" },
+    { title: "Halloween special II", fmt: "html", url: "html/icon15.html" }
+  ]},
+  { name: "Volume 4", season: "", icon: "ti-calendar-question", issues: [
+    { title: "Issue 1 – The Humanitarian Issue", fmt: "pdf", url: "pdfs/volume4/Iconoclast-v4i1.pdf" }
+  ]}
+];
 
-through extreme sarcasm and creative expression.  This organization 
+const root = document.getElementById('accordion');
 
-presently has too many writers to count and accepts from them
+volumes.forEach((vol, vi) => {
+  const wrap = document.createElement('div');
+  wrap.className = 'volume';
 
-all types of writing from the personal essay complaining about how 
+  const header = document.createElement('button');
+  header.className = 'volume-header';
+  header.innerHTML = `
+    <span class="volume-header-left">
+      <i class="ti ${vol.icon} volume-icon"></i>
+      <span class="volume-name">${vol.name}</span>
+      <span class="volume-season">${vol.season}</span>
+    </span>
+    <i class="ti ti-chevron-down chevron"></i>
+  `;
 
-we are all just brainwashed idiots, 
+  const body = document.createElement('div');
+  body.className = 'volume-body';
+  // // Volume 1 open by default
+  // if (vi === 0) {
+  //   body.classList.add('open');
+  //   header.querySelector('.chevron').style.transform = 'rotate(180deg)';
+  // }
 
-to stream of consciousness ramblings of slappy-stink monkey
+  vol.issues.forEach(iss => {
+    const row = document.createElement('div');
+    row.className = 'issue-row';
+    const badge = iss.fmt === 'pdf'
+      ? `<span class="badge badge-pdf"><i class="ti ti-file-type-pdf"></i>PDF</span>`
+      : `<span class="badge badge-html"><i class="ti ti-file-text"></i>HTML</span>`;
+    const target = iss.fmt === 'pdf' ? ' target="_blank" rel="noopener"' : '';
+    row.innerHTML = `<span class="issue-title"><a href="${iss.url}"${target}>${iss.title}</a></span>${badge}`;
+    body.appendChild(row);
+  });
 
-<p>
+  header.addEventListener('click', () => {
+    const open = body.classList.contains('open');
+    body.classList.toggle('open', !open);
+    header.querySelector('.chevron').style.transform = open ? 'rotate(0deg)' : 'rotate(180deg)';
+  });
 
-<I>The Iconoclast</I> is a member publication of the 
-
-esteemed <a href="http://www.csh.rit.edu/~diablo">
-
-Hell's Kitchen</a> in Rochester, NY which--in essence--
-
-is waging the same diatribe against the universe
-
-as <I>The Iconoclast</I>.
-
-<hr>
-
-<b>Volume 1 (Fall 1996)</b>
-
-<li><a href="icon1.html">Issue 1: </a>
-
-"Your Guide to Instant Teaching Certification"
-
-<li><a href="icon3.html">Issue 2: </a>
-
-"Treks on the Beach,"
-
-<li><a href="icon6.html">Issue 3: </a>
-
-"Boys Will Be Boys, Girls Will Be Gods"
-
-<li><a href="icon8.html">Issue 4: </a>
-
-"Goth Chicks of the World Unite!"
-
-<li><a href="hallow.html">Halloween Special</a>
-
-<p>
-
-<hr>
-
-<b>Volume 2 (Spring 1997)</b>
-
-<li><a href="icon9.html">Issue 1: </a>"Intellectual Barbarism"
-
-<li><a href="icon12.html">Issue 2:</a> Where we torture words in the spirit of modernism
-
-<li><a href="icon13.html">Issue 3:</a> Special Summer Issue
-
-<p>
-
-<hr>
-
-<b>Volume 3 (Fall 1997)</b>
-
-<li><a href="icon14.html">Issue 1:</a> An Iconoclast Manifesto is borne
-
-<li><a href="icon15.html">Special Halloween Issue II:</a> Scary monsters in your closet and other such none-suches
-
-<p>
-
-<hr>
-
-<li><a href="list.html">Index of Titles</a>
-
-<br>
-
-<br>Contact the person who started it all:
-
-<p>
-
-The Original Iconoclast 
-
-<br>c/o PO Box 2133
-
-<br>Cinnaminson, NJ 08077
-<br>
-<i><a href="mailto:p00h@clam.rutgers.edu">or drop me a line...</a>
+  wrap.appendChild(header);
+  wrap.appendChild(body);
+  root.appendChild(wrap);
+});
+</script>
 
 </body>
-
 </html>
-
-
-
