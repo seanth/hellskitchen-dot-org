@@ -1,28 +1,20 @@
 <!DOCTYPE html>
-<html data-chefs-special="on">
+<html>
 <head>
     <title>Gracies Dinnertime Theatre</title>
     <link rel="stylesheet" href="stylesheet.css">
     <style>
         body {
             font-family: system-ui, -apple-system, sans-serif;
-            /*max-width: 1000px;*/
+            max-width: 800px;
             margin: 0 auto;
             padding: 2rem;
             background-color: #f0f0f0;
             color: #333;
         }
-        html[data-chefs-special="off"] .menu-container {
-            grid-template-columns: repeat(2, 1fr);
-            max-width: 800px;
-        }
-        html[data-chefs-special="off"] .chefs-special {
-            display: none;
-        }
         .menu-container {
-            max-width: 1000px;
             display: grid;
-            grid-template-columns: repeat(3, 1fr);
+            grid-template-columns: repeat(2, 1fr);
             gap: 2rem;
         }
         .menu-section {
@@ -71,7 +63,6 @@
         }
 
         .banner {
-            max-width: 800px;
             grid-column: 1 / -1;
             background: #333;
             color: white;
@@ -113,25 +104,6 @@
             height: 20px;
             margin: 1rem 0;
             opacity: 0.2;
-        }
-        .circle {
-        width: 60%;
-        aspect-ratio: 1 / 1;
-        background-color: #c85a24;
-        border-radius: 50%;
-        display: flex;
-        justify-content: center; /* Horizontally centers the text */
-        align-items: center; 
-        color: white;
-        }
-        .fixed-square {
-        width: 60%;
-        aspect-ratio: 1 / 1;
-        background-color: #c85a24;
-        display: flex;
-        justify-content: center; /* Horizontally centers the text */
-        align-items: center; 
-        color: white;
         }
     </style>
 </head>
@@ -180,7 +152,8 @@
                 <svg class="divider"><use href="#divider-pattern"/></svg>
                 <div class="menu-title"><b>Lunch</b></div>
                 <div class="menu-item"><a href="ifaq.html">IFAQ</a></div>
-                <div class="menu-item"><a href="https://discord.gg/JyPaZhEwHr" target="_window">Join the Discord</a></div>
+                <div class="menu-item"><a href="imagegallery/welcome.html">Image Gallery</a></div>
+                <div class="menu-item"><a href="extras/zine-arranger/index.html">Zine arrangement tool</a></div>
             </div>
             
             <div class="menu-section">
@@ -194,42 +167,21 @@
                     <div class="menu-items">
                         <div class="menu-item"><a href="PDF/">Volume Archive (PDF)</a></div>
                         <div class="menu-item"><a href="PDF/BigRedBook/">The Big Red Book</a></div>
-                        <div class="menu-item"><a href="imagegallery/welcome.html">Image Gallery</a></div>
                     </div>
                 </div>
                 <svg class="divider"><use href="#divider-pattern"/></svg>
                 <div class="menu-title"><b>Dessert</b></div>
-                <!-- <div class="menu-item"><a href="https://www.youtube.com/watch?v=YmstcsemCAg" target="_window">Interview with the founders</a></div> -->
-                <div class="menu-item"><a href="https://hellskitchen.org/donation-pages/gdt/index.html>Donate to GDT</a></div>
+                <div class="menu-item"><a href="https://www.youtube.com/watch?v=YmstcsemCAg" target="_window">Interview with the founders</a></div>
                 <div class="menu-item"><a href="https://en.wikipedia.org/wiki/User:Kjoenth/Gracies_Dinnertime_Theatre" target="_window">Forbidden wikipedia entry</a></div>
-                <div class="menu-item"><a href="extras/zine-arranger/index.html">Zine arrangement tool</a></div>
-                
-            </div>
-            <div class="menu-section chefs-special">
-                <svg class="corner-decoration top-left"><use href="#corner-pattern"/></svg>
-                <svg class="corner-decoration top-right"><use href="#corner-pattern"/></svg>
-                <svg class="corner-decoration bottom-left"><use href="#corner-pattern"/></svg>
-                <svg class="corner-decoration bottom-right"><use href="#corner-pattern"/></svg>
-                <div class="menu-title"><b>Chef's Special</b></div>
-                <div class="menu-content">
-                    <div class="menu-items"> 
-                        <div class="menu-item">
-                            <div class="fixed-square">
-                                <a href="https://forms.gle/FjfkQmzUjdhU5r3Y6" target="_blank" style="font-size:30px;color:white">Halloween Story Contest</a></div>
-                            <p>
-                            <div class="circle">
-                                <a href="https://forms.gle/FjfkQmzUjdhU5r3Y6" target="_blank" style="font-size:30px;color:white">SUBMIT!</a></div>
-                        </div>
-                    </div>
-                </div>
+                <div class="menu-item"><a href="https://discord.gg/JyPaZhEwHr" target="_window">Discord</a></div>
             </div>
 
-        </div>
-        <div class="banner">
-            <a href="extras/disorderorder/index.html">
-            <img align='left' src="extras/disorderorder/imgs/cover_disorder.jpg" width=100><h2><i>Gracies Dinnertime Theatre</i> presents: "Disorder"</h2>
-            <p style="font-size:20px"><i>GDT</i>'s first and only four-color, glossy magazine. Probably collectable. Limited numbers. Why not get one?</p>
-            </a>
+            <div class="banner">
+                <a href="extras/disorderorder/index.html">
+                <img align='left' src="extras/disorderorder/imgs/cover_disorder.jpg" width=100><h2><i>Gracies Dinnertime Theatre</i> presents: "Disorder"</h2>
+                <p style="font-size:20px"><i>GDT</i>'s first and only four-color, glossy magazine. Probably collectable. Limited numbers. Why not get one?</p>
+                <a href="extras/disorderorder/index.html">
+            </div>
         </div>
         
         <div class="footer">
