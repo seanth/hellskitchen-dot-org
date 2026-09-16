@@ -1,0 +1,526 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Route Sheet</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Josefin+Sans&family=IBM+Plex+Mono');
+
+  :root{
+    --paper: #EFE9DA;
+    --paper-dark: #E2D9C4;
+    --ink: #22201B;
+    --ink-soft: #59554A;
+    --red: #A8351E;
+    --rule: #C9BE9F;
+    --done-bg: #DCD3B4;
+  }
+
+  *{ box-sizing: border-box; }
+
+  body{
+    margin:0;
+    background: var(--paper);
+    color: var(--ink);
+    font-family: 'IBM Plex Mono', monospace;
+    padding: 28px 18px 60px;
+  }
+
+  .sheet{
+    max-width: 720px;
+    margin: 0 auto;
+  }
+
+  .masthead{
+    border-top: 4px solid var(--ink);
+    border-bottom: 2px solid var(--ink);
+    padding: 14px 0 10px;
+    display:flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    gap: 12px;
+    flex-wrap: wrap;
+  }
+
+  .masthead h1{
+    font-family: 'Josefin Sans', serif;
+    font-weight: 700;
+    font-size: 34px;
+    margin: 0;
+    letter-spacing: -0.01em;
+  }
+
+  .masthead .tagline{
+    font-size: 12px;
+    color: var(--ink-soft);
+    margin-top: 2px;
+  }
+
+  .weeknav{
+    display:flex;
+    align-items:center;
+    gap:10px;
+    font-size: 13px;
+  }
+
+  .weeknav button{
+    background:none;
+    border: 1px solid var(--ink);
+    color: var(--ink);
+    font-family: inherit;
+    font-size: 13px;
+    padding: 4px 9px;
+    cursor:pointer;
+    border-radius: 2px;
+  }
+  .weeknav button:hover{ background: var(--ink); color: var(--paper); }
+  .weeknav button:disabled{ opacity:0.35; cursor:default; }
+  .weeknav button:disabled:hover{ background:none; color:var(--ink); }
+
+  .weeklabel{ font-weight:600; min-width: 148px; text-align:center; }
+
+  .status-line{
+    display:flex;
+    justify-content: space-between;
+    padding: 10px 0 16px;
+    font-size: 12px;
+    color: var(--ink-soft);
+    border-bottom: 1px solid var(--rule);
+    margin-bottom: 6px;
+  }
+
+  .who-field{
+    display:flex; align-items:center; gap:6px;
+  }
+  .who-field input{
+    font-family:inherit;
+    font-size:12px;
+    border:none;
+    border-bottom: 1px solid var(--ink-soft);
+    background:transparent;
+    color:var(--ink);
+    width: 90px;
+    padding: 2px 0;
+  }
+  .who-field input:focus{ outline:none; border-bottom-color: var(--red); }
+
+  ul.stops{ list-style:none; margin:0; padding:0; }
+
+  li.stop{
+    display:flex;
+    align-items:flex-start;
+    gap:12px;
+    padding: 11px 0;
+    border-bottom: 1px dashed var(--rule);
+  }
+
+  li.stop.done{ background: var(--done-bg); margin: 0 -10px; padding: 11px 10px; border-radius: 3px; }
+
+  .box{
+    flex: 0 0 auto;
+    width: 20px; height: 20px;
+    border: 2px solid var(--ink);
+    margin-top: 2px;
+    cursor:pointer;
+    position:relative;
+    background: var(--paper);
+  }
+  li.stop.done .box{ background: var(--red); border-color: var(--red); }
+  li.stop.done .box::after{
+    content:"";
+    position:absolute; left:4px; top:0px;
+    width:6px; height:11px;
+    border: solid var(--paper);
+    border-width: 0 2px 2px 0;
+    transform: rotate(40deg);
+  }
+
+  .stop-main{ flex:1; min-width:0; }
+
+  .stop-name{
+    font-family:'Fraunces', serif;
+    font-weight:600;
+    font-size: 17px;
+    line-height:1.2;
+    cursor:pointer;
+  }
+  li.stop.done .stop-name{ text-decoration: line-through; text-decoration-color: var(--ink-soft); color: var(--ink-soft); }
+
+  .stop-meta{
+    font-size: 11px;
+    color: var(--ink-soft);
+    margin-top: 3px;
+  }
+
+  .stop-notes{
+    font-size: 12px;
+    color: var(--ink-soft);
+    margin-top: 3px;
+    font-style: italic;
+  }
+
+  .stop-actions{
+    flex: 0 0 auto;
+    display:flex;
+    gap:6px;
+  }
+  .icon-btn{
+    background:none; border:none; cursor:pointer;
+    color: var(--ink-soft);
+    font-size: 14px;
+    font-family: inherit;
+    padding: 2px 4px;
+  }
+  .icon-btn:hover{ color: var(--red); }
+
+  .addrow{
+    margin-top: 18px;
+    padding-top: 14px;
+    border-top: 2px solid var(--ink);
+    display:flex;
+    flex-wrap:wrap;
+    gap: 8px;
+  }
+  .addrow input{
+    font-family: inherit;
+    font-size: 13px;
+    padding: 8px 9px;
+    border: 1px solid var(--ink);
+    background: var(--paper);
+    color: var(--ink);
+    border-radius: 2px;
+  }
+  .addrow input[name="name"]{ flex: 1 1 180px; }
+  .addrow input[name="notes"]{ flex: 1 1 140px; }
+  .addrow button{
+    font-family: inherit;
+    font-size: 13px;
+    padding: 8px 14px;
+    background: var(--ink);
+    color: var(--paper);
+    border: 1px solid var(--ink);
+    border-radius: 2px;
+    cursor: pointer;
+  }
+  .addrow button:hover{ background: var(--red); border-color: var(--red); }
+
+  .footnote{
+    margin-top: 22px;
+    font-size: 11px;
+    color: var(--ink-soft);
+    line-height: 1.5;
+  }
+
+  .empty{
+    padding: 30px 0;
+    text-align:center;
+    color: var(--ink-soft);
+    font-size: 13px;
+  }
+
+  .loading{ padding: 40px 0; text-align:center; color: var(--ink-soft); font-size:13px; }
+
+  .setup-box{
+    margin-top: 16px;
+    padding: 14px;
+    border: 1px solid var(--ink);
+    border-radius: 3px;
+    background: var(--paper-dark);
+  }
+  .setup-title{ font-family:'Fraunces', serif; font-weight:600; font-size:15px; margin-bottom:4px; }
+  .setup-body{ font-size:12px; color: var(--ink-soft); margin-bottom:10px; line-height:1.5; }
+  .setup-body code{ background: var(--paper); padding: 1px 4px; border-radius: 2px; }
+  .setup-row{ display:flex; gap:8px; flex-wrap:wrap; }
+  .setup-row input{
+    flex: 1 1 260px;
+    font-family: inherit; font-size:12px;
+    padding: 7px 9px;
+    border: 1px solid var(--ink);
+    border-radius:2px;
+    background: var(--paper);
+    color: var(--ink);
+  }
+  .setup-row button{
+    font-family: inherit; font-size:12px;
+    padding: 7px 14px;
+    background: var(--ink); color: var(--paper);
+    border: 1px solid var(--ink); border-radius:2px;
+    cursor:pointer;
+  }
+  .setup-row button:hover{ background: var(--red); border-color: var(--red); }
+  .setup-note{ font-size:11px; color:var(--ink-soft); margin-top:8px; }
+  .error-msg{ color: var(--red); font-size:12px; padding: 10px 0; }
+</style>
+</head>
+<body>
+
+<div class="sheet">
+  <div class="masthead">
+    <div>
+      <h1>Route Sheet</h1>
+      <div class="tagline">GDT distribution checklist for UniversityName</div>
+    </div>
+    <div class="weeknav">
+      <button id="prevWeek">&larr;</button>
+      <div class="weeklabel" id="weekLabel">—</div>
+      <button id="nextWeek">&rarr;</button>
+    </div>
+  </div>
+
+  <div id="setupBox" class="setup-box">
+    <div class="setup-title">One-time setup</div>
+    <div class="setup-body">
+      Paste your Apps Script Web App URL (ends in <code>/exec</code>) to connect this page to your Google Sheet.
+    </div>
+    <div class="setup-row">
+      <input id="apiUrlInput" type="text" placeholder="https://script.google.com/macros/s/.../exec">
+      <button id="saveApiUrl">Connect</button>
+    </div>
+  </div>
+
+  <div class="status-line" id="statusLine" style="display:none;">
+    <div id="progressText">loading…</div>
+    <div class="who-field">
+      <label for="whoInput">Distributed by (name/intials/symbol/etc):</label>
+      <input id="whoInput" type="text" placeholder="~~~~~" maxlength="12">
+    </div>
+  </div>
+
+  <div id="listWrap"><div class="loading">Loading checklist…</div></div>
+
+  <div class="addrow">
+    <input name="name" type="text" placeholder="Add a location name">
+    <input name="notes" type="text" placeholder="Note (ex: 'leave 15 copies')">
+    <button id="addBtn">Add stop</button>
+  </div>
+
+<!--   <div class="footnote">
+    Footnoted information if needed
+  </div> -->
+</div>
+
+<script>
+(function(){
+  const listWrap = document.getElementById('listWrap');
+  const weekLabelEl = document.getElementById('weekLabel');
+  const progressText = document.getElementById('progressText');
+  const prevBtn = document.getElementById('prevWeek');
+  const nextBtn = document.getElementById('nextWeek');
+  const whoInput = document.getElementById('whoInput');
+  const addBtn = document.getElementById('addBtn');
+  const setupBox = document.getElementById('setupBox');
+  const statusLine = document.getElementById('statusLine');
+  const apiUrlInput = document.getElementById('apiUrlInput');
+  const saveApiUrlBtn = document.getElementById('saveApiUrl');
+
+  let API_URL = 'https://script.google.com/macros/s/AKfycbwOQdWNO7RL_VA8TtCRHDakRv3GET3MNzGRd0pOLkKdrT41ioMhKCyCgBI801w4xoDIbA/exec';         // set via the setup box, kept in memory for this session
+  let locations = [];       // [{id, name, notes}]
+  let weekOffset = 0;       // 0 = current week, -1 = last week, etc. (never > 0)
+  let weekData = { checks: {} }; // { [locId]: {checked, by, at} }
+
+  async function apiCall(params){
+    const url = API_URL + '?' + new URLSearchParams(params).toString();
+    const res = await fetch(url);
+    if(!res.ok) throw new Error('Request failed: ' + res.status);
+    const data = await res.json();
+    if(data.error) throw new Error(data.error);
+    return data;
+  }
+
+  function mondayOf(date){
+    const d = new Date(date);
+    const day = d.getDay(); // 0 Sun .. 6 Sat
+    const diff = (day === 0 ? -6 : 1) - day;
+    d.setDate(d.getDate() + diff);
+    d.setHours(0,0,0,0);
+    return d;
+  }
+
+  function weekKeyFor(offset){
+    const base = mondayOf(new Date());
+    base.setDate(base.getDate() + offset*7);
+    const y = base.getFullYear();
+    const m = String(base.getMonth()+1).padStart(2,'0');
+    const d = String(base.getDate()).padStart(2,'0');
+    return { key: `week:${y}-${m}-${d}`, mondayDate: base };
+  }
+
+  function formatWeekLabel(mondayDate){
+    const end = new Date(mondayDate);
+    end.setDate(end.getDate()+6);
+    const opts = { month:'short', day:'numeric' };
+    return `${mondayDate.toLocaleDateString('en-US', opts)} – ${end.toLocaleDateString('en-US', opts)}`;
+  }
+
+  async function loadLocations(){
+    const data = await apiCall({ action: 'getLocations' });
+    locations = data.locations || [];
+  }
+
+  async function loadWeek(){
+    const { key } = weekKeyFor(weekOffset);
+    const data = await apiCall({ action: 'getWeek', week: key });
+    weekData = { checks: data.checks || {} };
+  }
+
+  function render(){
+    const { mondayDate } = weekKeyFor(weekOffset);
+    weekLabelEl.textContent = formatWeekLabel(mondayDate);
+    nextBtn.disabled = weekOffset >= 0;
+
+    if(locations.length === 0){
+      listWrap.innerHTML = '<div class="empty">No locations yet — add your first stop below.</div>';
+      progressText.textContent = 'No stops added';
+      return;
+    }
+
+    let doneCount = 0;
+    const rows = locations.map(loc => {
+      const c = weekData.checks[loc.id];
+      const isDone = !!(c && c.checked);
+      if(isDone) doneCount++;
+      const meta = isDone
+        ? `checked off${c.by ? ' by ' + escapeHtml(c.by) : ''}${c.at ? ' · ' + new Date(c.at).toLocaleDateString('en-US',{month:'short',day:'numeric'}) : ''}`
+        : 'not yet done';
+      return `
+        <li class="stop ${isDone ? 'done' : ''}" data-id="${loc.id}">
+          <div class="box" data-action="toggle"></div>
+          <div class="stop-main">
+            <div class="stop-name" data-action="toggle">${escapeHtml(loc.name)}</div>
+            ${loc.notes ? `<div class="stop-notes">${escapeHtml(loc.notes)}</div>` : ''}
+            <div class="stop-meta">${meta}</div>
+          </div>
+          <div class="stop-actions">
+            <button class="icon-btn" data-action="delete" title="Remove location">remove</button>
+          </div>
+        </li>`;
+    }).join('');
+
+    listWrap.innerHTML = `<ul class="stops">${rows}</ul>`;
+    progressText.textContent = `${doneCount} of ${locations.length} stops done this week`;
+  }
+
+  function escapeHtml(str){
+    const d = document.createElement('div');
+    d.textContent = str;
+    return d.innerHTML;
+  }
+
+  async function toggleLocation(id){
+    const { key } = weekKeyFor(weekOffset);
+    const existing = weekData.checks[id];
+    const nowDone = !(existing && existing.checked);
+    const by = whoInput.value.trim();
+    // optimistic update
+    weekData.checks[id] = nowDone ? { checked: true, by, at: Date.now() } : { checked: false };
+    render();
+    try{
+      await apiCall({ action: 'toggleCheck', week: key, id, checked: String(nowDone), by });
+    }catch(e){
+      showError('Could not save that check-off. ' + e.message);
+      await loadWeek();
+      render();
+    }
+  }
+
+  async function deleteLocation(id){
+    const prev = locations;
+    locations = locations.filter(l => l.id !== id);
+    render();
+    try{
+      await apiCall({ action: 'deleteLocation', id });
+    }catch(e){
+      locations = prev;
+      showError('Could not remove that location. ' + e.message);
+      render();
+    }
+  }
+
+  function showError(msg){
+    const div = document.createElement('div');
+    div.className = 'error-msg';
+    div.textContent = msg;
+    listWrap.prepend(div);
+  }
+
+  listWrap.addEventListener('click', (e) => {
+    const li = e.target.closest('li.stop');
+    if(!li) return;
+    const id = li.getAttribute('data-id');
+    const action = e.target.getAttribute('data-action');
+    if(action === 'toggle') toggleLocation(id);
+    if(action === 'delete') deleteLocation(id);
+  });
+
+  addBtn.addEventListener('click', async () => {
+    const nameInput = document.querySelector('.addrow input[name="name"]');
+    const notesInput = document.querySelector('.addrow input[name="notes"]');
+    const name = nameInput.value.trim();
+    const notes = notesInput.value.trim();
+    if(!name) return;
+    addBtn.disabled = true;
+    try{
+      const data = await apiCall({ action: 'addLocation', name, notes });
+      locations.push(data.location);
+      nameInput.value = '';
+      notesInput.value = '';
+      render();
+    }catch(e){
+      showError('Could not add that location. ' + e.message);
+    }
+    addBtn.disabled = false;
+  });
+
+  document.querySelector('.addrow input[name="name"]').addEventListener('keydown', (e)=>{
+    if(e.key === 'Enter') addBtn.click();
+  });
+
+  prevBtn.addEventListener('click', async () => {
+    weekOffset -= 1;
+    listWrap.innerHTML = '<div class="loading">Loading checklist…</div>';
+    await loadWeek();
+    render();
+  });
+
+  nextBtn.addEventListener('click', async () => {
+    if(weekOffset >= 0) return;
+    weekOffset += 1;
+    listWrap.innerHTML = '<div class="loading">Loading checklist…</div>';
+    await loadWeek();
+    render();
+  });
+
+  async function connectAndLoad(){
+    listWrap.innerHTML = '<div class="loading">Connecting…</div>';
+    try{
+      await loadLocations();
+      await loadWeek();
+      setupBox.style.display = 'none';
+      statusLine.style.display = 'flex';
+      render();
+    }catch(e){
+      listWrap.innerHTML = '<div class="error-msg">Could not connect: ' + e.message + '<br>Double-check the Web App URL and that the deployment access is set to "Anyone".</div>';
+    }
+  }
+
+  saveApiUrlBtn.addEventListener('click', () => {
+    const val = apiUrlInput.value.trim();
+    if(!val) return;
+    API_URL = val;
+    connectAndLoad();
+  });
+  apiUrlInput.addEventListener('keydown', (e) => {
+    if(e.key === 'Enter') saveApiUrlBtn.click();
+  });
+
+  if (API_URL) {
+    setupBox.style.display = 'none';
+    statusLine.style.display = 'flex';
+    connectAndLoad();
+  }
+// else: page loads with the setup box open, waiting for a URL to be entered.
+})();
+</script>
+
+</body>
+</html>
