@@ -258,7 +258,7 @@
   <div class="masthead">
     <div>
       <h1>Route Sheet</h1>
-      <div class="tagline">GDT distribution checklist for the University of North Dakota</div>
+      <div class="tagline">GDT distribution checklist for the Rochester Institute of Technology</div>
     </div>
     <div class="weeknav">
       <button id="prevWeek">&larr;</button>
@@ -295,9 +295,10 @@
   </div>
 
   <div class="footnote">
-    Never distribute to:
     <ul>
-      <li>Memorial Union common areas
+      <li>The Student Alumni Union
+      <li>Dorms (including laundry rooms and connecting tunnels)
+      <li>Gracie's dining hall
       <li>On racks clearly made for other publications
       <li>Never near emergency equipment (fire alarms, smoke detectors, defibulators, etc)
       <li>Don't just litter on a floor
@@ -321,7 +322,7 @@
   const apiUrlInput = document.getElementById('apiUrlInput');
   const saveApiUrlBtn = document.getElementById('saveApiUrl');
 
-  let API_URL = 'https://script.google.com/macros/s/AKfycbzRp3RUNuhPbCFc5fhX6LvY9n8EI2O0aZmf8uqJ1NyjERVUGNhlbdV5XG5efHceBOPl/exec';         // set via the setup box, kept in memory for this session
+  let API_URL = 'https://script.google.com/macros/s/AKfycbwOQdWNO7RL_VA8TtCRHDakRv3GET3MNzGRd0pOLkKdrT41ioMhKCyCgBI801w4xoDIbA/exec';         // set via the setup box, kept in memory for this session
   let locations = [];       // [{id, name, notes}]
   let weekOffset = 0;       // 0 = current week, -1 = last week, etc. (never > 0)
   let weekData = { checks: {} }; // { [locId]: {checked, by, at} }
