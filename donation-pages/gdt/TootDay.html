@@ -1,0 +1,292 @@
+<!-- Fundraising Thermometer with Milestones
+     To update: change data-raised on the .ft-widget div below.
+     Milestones are the <li> items; data-amount sets each threshold (keep them in ascending order).
+     The last milestone is treated as the overall goal.
+     data-scale="milestone" spaces milestones evenly up the tube; "linear" uses true dollar proportions. -->
+<div class="ft-widget" data-raised="305"data-scale="milestone">
+    <h2 class="ft-headline">Toot Day progress</h2>
+
+    <div class="ft-body">
+        <div class="ft-meter" role="img" aria-label="Fundraising progress thermometer">
+            <svg class="ft-svg" viewBox="0 0 130 456" preserveAspectRatio="xMidYMid meet">
+                <defs>
+                    <clipPath id="ftThermoClip">
+                        <rect class="ft-clip-rect" x="0" y="398" width="130" height="62"/>
+                    </clipPath>
+                </defs>
+                <!-- Tube + bulb background -->
+                <path class="ft-shape" fill="#ffffff" fill-opacity="0.55"
+                      d="M22.6,398.06 L22.6,37.4 A17.4,17.4 0 0 1 57.4,37.4 L57.4,398.06 A28,28 0 1 1 22.6,398.06 Z"/>
+                <!-- Fill, clipped to the raised level -->
+                <path class="ft-shape" fill="#3366ff" clip-path="url(#ftThermoClip)"
+                      d="M22.6,398.06 L22.6,37.4 A17.4,17.4 0 0 1 57.4,37.4 L57.4,398.06 A28,28 0 1 1 22.6,398.06 Z"/>
+                <!-- Outline -->
+                <path class="ft-shape" fill="none" stroke="#0d1b2a" stroke-width="3"
+                      d="M22.6,398.06 L22.6,37.4 A17.4,17.4 0 0 1 57.4,37.4 L57.4,398.06 A28,28 0 1 1 22.6,398.06 Z"/>
+                <!-- Milestone ticks and labels are drawn here by the script -->
+                <g class="ft-ticks"></g>
+            </svg>
+        </div>
+
+        <div class="ft-side">
+            <div class="ft-stats">
+                <div class="ft-stat">
+                    <span class="ft-value" data-ft="raised">$250</span>
+                    <span class="ft-label">Raised</span>
+                </div>
+                <div class="ft-stat">
+                    <span class="ft-value" data-ft="goal">$1,000</span>
+                    <span class="ft-label">Goal</span>
+                </div>
+            </div>
+
+            <ol class="ft-milestones">
+                <li class="ft-milestone" data-amount="25">
+                    <span class="ft-ms-amount">$25</span>
+                    <span class="ft-ms-desc">We can print thousands of pages.</span>
+                    <span class="ft-ms-status"></span>
+                </li>
+                <li class="ft-milestone" data-amount="50">
+                    <span class="ft-ms-amount">$50</span>
+                    <span class="ft-ms-desc">Production run of professionally-made GDT stickers.</span>
+                    <span class="ft-ms-status"></span>
+                </li>
+                <li class="ft-milestone" data-amount="100">
+                    <span class="ft-ms-amount">$100</span>
+                    <span class="ft-ms-desc">Pizza party at a meeting.</span>
+                    <span class="ft-ms-status"></span>
+                </li>
+                <li class="ft-milestone" data-amount="200">
+                    <span class="ft-ms-amount">$200</span>
+                    <span class="ft-ms-desc">At least one toot bunny keychain will be made. Maybe even several…</span>
+                    <span class="ft-ms-status"></span>
+                </li>
+                <li class="ft-milestone" data-amount="400">
+                    <span class="ft-ms-amount">$400</span>
+                    <span class="ft-ms-desc">Editors Ice bucket challenge.</span>
+                    <span class="ft-ms-status"></span>
+                </li>
+                <li class="ft-milestone" data-amount="500">
+                    <span class="ft-ms-amount">$500</span>
+                    <span class="ft-ms-desc">If we cross this threshold, Samboozled will do 2 jumping jacks per dollar raised in the entire campaign (immediately forces 1k+ jumping jacks).
+                        <span class="ft-jj" data-per-dollar="2" hidden></span>
+                    </span>
+                    <span class="ft-ms-status"></span>
+                </li>
+                <li class="ft-milestone" data-amount="1000">
+                    <span class="ft-ms-amount">$1,000</span>
+                    <span class="ft-ms-desc">We begin scheming to increase our circulation.</span>
+                    <span class="ft-ms-status"></span>
+                </li>
+            </ol>
+        </div>
+    </div>
+</div>
+
+<style>
+.ft-widget {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Arial, sans-serif;
+    max-width: 682px;
+    width: 100%;
+    box-sizing: border-box;
+    background-color: #ffe8d1;
+    color: #0d1b2a;
+    padding: 34px 40px 28px 34px;
+}
+.ft-headline {
+    font-size: 32px;
+    font-weight: 600;
+    line-height: 1.4;
+    color: #0d1b2a;
+    margin: 0 0 24px;
+}
+.ft-body {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: flex-start;
+    gap: 28px;
+}
+.ft-meter {
+    flex: 0 0 120px;
+    width: 120px;
+}
+.ft-svg {
+    display: block;
+    width: 100%;
+    height: auto;
+    overflow: visible;
+}
+.ft-tick { stroke: #0d1b2a; stroke-width: 2; opacity: 0.35; }
+.ft-tick.is-reached { stroke: #3366ff; opacity: 1; }
+.ft-tick-label { font-size: 13px; font-weight: 600; fill: #0d1b2a; opacity: 0.45; }
+.ft-tick-label.is-reached { fill: #3366ff; opacity: 1; }
+
+.ft-side {
+    flex: 1 1 280px;
+    min-width: 0;
+}
+.ft-stats {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px 28px;
+    margin-bottom: 22px;
+}
+.ft-stat { display: flex; flex-direction: column; }
+.ft-value { font-size: 24px; font-weight: bold; color: #3366ff; }
+.ft-label { font-size: 13px; line-height: 24px; letter-spacing: 0.2px; margin-top: 2px; }
+
+.ft-milestones {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+.ft-milestone {
+    display: grid;
+    grid-template-columns: 62px 1fr;
+    column-gap: 12px;
+    padding-left: 10px;
+    border-left: 3px solid rgba(13, 27, 42, 0.15);
+    opacity: 0.6;
+}
+.ft-milestone.is-reached { border-left-color: #3366ff; opacity: 1; }
+.ft-milestone.is-next { border-left-color: #0d1b2a; opacity: 1; }
+.ft-ms-amount { font-weight: 700; font-size: 15px; line-height: 1.4; }
+.ft-milestone.is-reached .ft-ms-amount { color: #3366ff; }
+.ft-ms-desc { font-size: 14px; line-height: 1.4; overflow-wrap: break-word; }
+.ft-ms-status {
+    grid-column: 2;
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: 0.3px;
+    text-transform: uppercase;
+    margin-top: 2px;
+}
+.ft-ms-status:empty { display: none; }
+.ft-milestone.is-reached .ft-ms-status { color: #3366ff; }
+.ft-jj { display: block; margin-top: 4px; font-style: italic; }
+.ft-jj[hidden] { display: none; }
+
+.ft-powered {
+    display: block;
+    margin-top: 20px;
+    font-size: 12px;
+    color: #002042;
+}
+.ft-powered a { color: #3366ff; }
+
+@media (max-width: 520px) {
+    .ft-widget { padding: 24px 16px; }
+    .ft-headline { font-size: 26px; }
+    .ft-meter { margin: 0 auto; }
+}
+</style>
+
+<script>
+(function () {
+    var SVG_NS = 'http://www.w3.org/2000/svg';
+    var Y_EMPTY = 398;   // fill level at $0 (bulb stays full)
+    var Y_FULL = 20;     // top of the tube
+    var fmt = function (n) {
+        return '$' + Math.round(n).toLocaleString('en-US');
+    };
+
+    function init(root) {
+        var raised = parseFloat(root.getAttribute('data-raised')) || 0;
+        var scale = root.getAttribute('data-scale') || 'milestone';
+
+        var ms = Array.prototype.map.call(root.querySelectorAll('.ft-milestone'), function (li) {
+            return { amt: parseFloat(li.getAttribute('data-amount')), li: li };
+        });
+        if (!ms.length) return;
+        var goal = ms[ms.length - 1].amt;
+
+        // Fraction of tube height for a dollar value
+        function frac(v) {
+            if (v <= 0) return 0;
+            if (v >= goal) return 1;
+            if (scale === 'linear') return v / goal;
+            var prev = 0;
+            for (var i = 0; i < ms.length; i++) {
+                if (v <= ms[i].amt) {
+                    return (i + (v - prev) / (ms[i].amt - prev)) / ms.length;
+                }
+                prev = ms[i].amt;
+            }
+            return 1;
+        }
+        function yFor(v) { return Y_EMPTY - frac(v) * (Y_EMPTY - Y_FULL); }
+
+        // Fill level
+        var rect = root.querySelector('.ft-clip-rect');
+        var level = raised >= goal ? 0 : yFor(raised);
+        rect.setAttribute('y', level);
+        rect.setAttribute('height', 460 - level);
+
+        // Ticks + labels (labels skipped if they would overlap in linear mode)
+        var g = root.querySelector('.ft-ticks');
+        var lastLabelY = Infinity;
+        ms.forEach(function (m) {
+            var y = yFor(m.amt);
+            var reached = raised >= m.amt;
+            var line = document.createElementNS(SVG_NS, 'line');
+            line.setAttribute('x1', 61); line.setAttribute('x2', 71);
+            line.setAttribute('y1', y);  line.setAttribute('y2', y);
+            line.setAttribute('class', 'ft-tick' + (reached ? ' is-reached' : ''));
+            g.appendChild(line);
+            if (lastLabelY - y >= 15) {
+                var t = document.createElementNS(SVG_NS, 'text');
+                t.setAttribute('x', 75);
+                t.setAttribute('y', y + 4.5);
+                t.setAttribute('class', 'ft-tick-label' + (reached ? ' is-reached' : ''));
+                t.textContent = fmt(m.amt);
+                g.appendChild(t);
+                lastLabelY = y;
+            }
+        });
+
+        // Milestone list states
+        var nextFound = false;
+        ms.forEach(function (m) {
+            var status = m.li.querySelector('.ft-ms-status');
+            m.li.classList.remove('is-reached', 'is-next');
+            if (raised >= m.amt) {
+                m.li.classList.add('is-reached');
+                status.textContent = '✓ Unlocked';
+            } else if (!nextFound) {
+                nextFound = true;
+                m.li.classList.add('is-next');
+                status.textContent = fmt(m.amt - raised) + ' to go';
+            } else {
+                status.textContent = '';
+            }
+        });
+
+        // Live jumping-jack tally once its milestone is crossed
+        Array.prototype.forEach.call(root.querySelectorAll('.ft-jj'), function (el) {
+            var li = el.closest('.ft-milestone');
+            var per = parseFloat(el.getAttribute('data-per-dollar')) || 0;
+            if (li && raised >= parseFloat(li.getAttribute('data-amount'))) {
+                el.textContent = 'Current tally: ' + Math.round(raised * per).toLocaleString('en-US') + ' jumping jacks.';
+                el.hidden = false;
+            } else {
+                el.hidden = true;
+            }
+        });
+
+        // Stats
+        var set = function (key, val) {
+            var el = root.querySelector('[data-ft="' + key + '"]');
+            if (el) el.textContent = val;
+        };
+        set('raised', fmt(raised));
+        set('goal', fmt(goal));
+        root.querySelector('.ft-meter').setAttribute('aria-label',
+            fmt(raised) + ' raised of ' + fmt(goal) + ' goal');
+    }
+
+    Array.prototype.forEach.call(document.querySelectorAll('.ft-widget'), init);
+})();
+</script>
