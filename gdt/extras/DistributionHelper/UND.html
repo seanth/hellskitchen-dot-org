@@ -3,8 +3,13 @@
 <head>
 <meta charset="UTF-8">
 <title>Route Sheet</title>
+<!-- Start the TLS handshakes to the backend while the page is still parsing -->
+<link rel="preconnect" href="https://script.google.com">
+<link rel="preconnect" href="https://script.googleusercontent.com" crossorigin>
+<!-- Fonts are self-hosted in fonts/ (see fonts.css). The body font is preloaded so it starts downloading immediately. -->
+<link rel="preload" href="fonts/IBM_Plex_Mono.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="stylesheet" href="fonts.css">
 <style>
-  @import url('https://fonts.googleapis.com/css2?family=Josefin+Sans&family=IBM+Plex+Mono');
 
   :root{
     --paper: #EFE9DA;
@@ -374,6 +379,8 @@
   let weekData = { checks: {} }; // { [locId]: {checked, by, at, claimedBy, claimedAt} }
   const pending = new Set(); // location ids with a request in flight
   let connected = false;
+  let writeSeq = 0;          // bumps whenever a save comes back; lets loads detect they're stale
+  let showingCached = false; // true while the list on screen came from this browser's cache
   let msgTimer = null;
 
   // ---- small helpers ----------------------------------------------------
@@ -420,9 +427,12 @@
 
   async function apiCall(params){
     const url = API_URL + '?' + new URLSearchParams(params).toString();
+    const t0 = performance.now();
     const res = await fetch(url);
     if(!res.ok) throw new Error('Request failed: ' + res.status);
     const data = await res.json();
+    // Visible in the browser console; useful for telling network/Google delay from page delay.
+    console.info(`[route-sheet] ${params.action}: ${Math.round(performance.now() - t0)} ms`);
     if(data.error) throw new Error(data.error);
     return data;
   }
@@ -463,6 +473,38 @@
     locations = data.locations || [];
   }
 
+  // Locations + this week's checks in a single request.
+  async function loadAll(){
+    const key = currentKey();
+    const seq = writeSeq;
+    const data = await apiCall({ action: 'getAll', week: key });
+    locations = data.locations || [];
+    // Skip the checks if the user switched weeks, or saved something while this
+    // read was in flight (the read may predate that save).
+    if(key === currentKey() && seq === writeSeq){
+      weekData = { checks: data.checks || {} };
+      if(weekOffset === 0) saveCache(key);
+    }
+  }
+
+  // Last-seen list for the current week, so a returning visitor sees the
+  // route sheet instantly while the fresh copy loads in the background.
+  function cacheKey(){ return 'routeSheet.cache:' + API_URL; }
+  function saveCache(key){
+    store(cacheKey(), JSON.stringify({ week: key, locations, checks: weekData.checks }));
+  }
+  function loadCache(){
+    try{
+      const c = JSON.parse(store(cacheKey()) || 'null');
+      if(c && c.week === weekKeyFor(0).key && Array.isArray(c.locations)){
+        locations = c.locations;
+        weekData = { checks: c.checks || {} };
+        return true;
+      }
+    }catch(e){}
+    return false;
+  }
+
   async function loadWeek(){
     const key = currentKey();
     const data = await apiCall({ action: 'getWeek', week: key });
@@ -472,6 +514,7 @@
 
   // Apply a single stop's server record, unless the user has moved to another week.
   function applyCheck(key, id, check){
+    writeSeq++;
     if(key === currentKey() && check) weekData.checks[id] = check;
   }
 
@@ -555,7 +598,8 @@
     const total = locations.length;
     if(isCurrentWeek){
       const open = total - doneCount - claimedCount;
-      progressText.textContent = `${doneCount} done · ${claimedCount} claimed · ${open} open of ${total}`;
+      progressText.textContent = `${doneCount} done · ${claimedCount} claimed · ${open} open of ${total}` +
+        (showingCached ? ' · updating…' : '');
     }else{
       progressText.textContent = `${doneCount} of ${total} stops done that week`;
     }
@@ -663,7 +707,7 @@
     if(!connected || refreshing || document.hidden || pending.size) return;
     refreshing = true;
     try{
-      await Promise.all([loadLocations(), loadWeek()]);
+      await loadAll();
       if(!pending.size) render();
     }catch(e){
       // A missed refresh isn't worth interrupting anyone; the next one will try again.
@@ -739,16 +783,28 @@
   nextBtn.addEventListener('click', () => { if(weekOffset < 0) changeWeek(1); });
 
   async function connectAndLoad(){
-    listWrap.innerHTML = '<div class="loading">Connecting…</div>';
-    try{
-      await loadLocations();
-      await loadWeek();
+    if(weekOffset === 0 && loadCache()){
+      showingCached = true;
       connected = true;
+      render();
+    }else{
+      listWrap.innerHTML = '<div class="loading">Connecting…</div>';
+    }
+    try{
+      await loadAll();
+      connected = true;
+      showingCached = false;
       setupBox.style.display = 'none';
       statusLine.style.display = 'flex';
-      render();
+      if(!pending.size) render();
     }catch(e){
-      listWrap.innerHTML = '<div class="error-msg">Could not connect: ' + escapeHtml(e.message) + '<br>Double-check the Web App URL and that the deployment access is set to "Anyone".</div>';
+      if(showingCached){
+        showingCached = false;
+        render();
+        showMsg('Showing your last saved copy; could not reach the sheet. ' + e.message);
+      }else{
+        listWrap.innerHTML = '<div class="error-msg">Could not connect: ' + escapeHtml(e.message) + '<br>Double-check the Web App URL and that the deployment access is set to "Anyone".</div>';
+      }
     }
   }
 
