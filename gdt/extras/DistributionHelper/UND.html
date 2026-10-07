@@ -3,8 +3,13 @@
 <head>
 <meta charset="UTF-8">
 <title>Route Sheet</title>
+<!-- Start the TLS handshakes to the backend while the page is still parsing -->
+<link rel="preconnect" href="https://script.google.com">
+<link rel="preconnect" href="https://script.googleusercontent.com" crossorigin>
+<!-- Fonts are self-hosted in fonts/ (see fonts.css). The body font is preloaded so it starts downloading immediately. -->
+<link rel="preload" href="fonts/IBM_Plex_Mono.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="stylesheet" href="fonts.css">
 <style>
-  @import url('https://fonts.googleapis.com/css2?family=Josefin+Sans&family=IBM+Plex+Mono');
 
   :root{
     --paper: #EFE9DA;
@@ -250,6 +255,43 @@
   .setup-row button:hover{ background: var(--red); border-color: var(--red); }
   .setup-note{ font-size:11px; color:var(--ink-soft); margin-top:8px; }
   .error-msg{ color: var(--red); font-size:12px; padding: 10px 0; }
+
+  /* ---- claims ---- */
+  .status-line{ flex-wrap: wrap; gap: 8px 16px; }
+  .filter-field{ display:flex; align-items:center; gap:6px; flex-basis:100%; justify-content:flex-end; }
+  .filter-field input{ margin:0; accent-color: var(--ink); }
+  .msg-area:empty{ display:none; }
+  .msg-area{ color: var(--red); font-size:12px; padding: 10px 0 4px; }
+
+  li.stop.mine{ border-left: 3px solid var(--ink); padding-left: 9px; }
+  li.stop.others .stop-name{ color: var(--ink-soft); }
+  li.stop.others .box{ border-color: var(--ink-soft); }
+
+  .stop-actions{ align-items:center; flex-wrap:wrap; justify-content:flex-end; }
+  .claim-btn{
+    background:none;
+    border: 1px solid var(--ink);
+    color: var(--ink);
+    font-family: inherit;
+    font-size: 12px;
+    padding: 3px 8px;
+    cursor:pointer;
+    border-radius: 2px;
+    white-space: nowrap;
+  }
+  .claim-btn:hover{ background: var(--ink); color: var(--paper); }
+  .claim-tag{
+    font-size: 11px;
+    padding: 2px 6px;
+    border-radius: 2px;
+    white-space: nowrap;
+    max-width: 110px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .claim-tag.mine{ background: var(--ink); color: var(--paper); }
+  .claim-tag.others{ background: var(--paper-dark); color: var(--ink); border: 1px solid var(--rule); }
+  .claim-pending{ font-size: 11px; color: var(--ink-soft); }
 </style>
 </head>
 <body>
@@ -284,7 +326,13 @@
       <label for="whoInput">Distributed by (name/intials/symbol/etc):</label>
       <input id="whoInput" type="text" placeholder="~~~~~" maxlength="12">
     </div>
+    <label class="filter-field">
+      <input id="hideOthers" type="checkbox">
+      Hide stops claimed by others
+    </label>
   </div>
+
+  <div class="msg-area" id="msgArea" role="status"></div>
 
   <div id="listWrap"><div class="loading">Loading checklist…</div></div>
 
@@ -298,7 +346,7 @@
     Never distribute to:
     <ul>
       <li>Memorial Union common areas
-      <li>On to racks clearly made for other publications
+      <li>On racks clearly made for other publications
       <li>Never near emergency equipment (fire alarms, smoke detectors, defibulators, etc)
       <li>Don't just litter on a floor
       <li>Not in a stack outside
@@ -315,6 +363,8 @@
   const prevBtn = document.getElementById('prevWeek');
   const nextBtn = document.getElementById('nextWeek');
   const whoInput = document.getElementById('whoInput');
+  const hideOthersInput = document.getElementById('hideOthers');
+  const msgArea = document.getElementById('msgArea');
   const addBtn = document.getElementById('addBtn');
   const setupBox = document.getElementById('setupBox');
   const statusLine = document.getElementById('statusLine');
@@ -322,18 +372,72 @@
   const saveApiUrlBtn = document.getElementById('saveApiUrl');
 
   let API_URL = 'https://script.google.com/macros/s/AKfycbzRp3RUNuhPbCFc5fhX6LvY9n8EI2O0aZmf8uqJ1NyjERVUGNhlbdV5XG5efHceBOPl/exec';         // set via the setup box, kept in memory for this session
+  const REFRESH_MS = 60 * 1000; // how often to pick up other people's claims while the page is open
+
   let locations = [];       // [{id, name, notes}]
   let weekOffset = 0;       // 0 = current week, -1 = last week, etc. (never > 0)
-  let weekData = { checks: {} }; // { [locId]: {checked, by, at} }
+  let weekData = { checks: {} }; // { [locId]: {checked, by, at, claimedBy, claimedAt} }
+  const pending = new Set(); // location ids with a request in flight
+  let connected = false;
+  let writeSeq = 0;          // bumps whenever a save comes back; lets loads detect they're stale
+  let showingCached = false; // true while the list on screen came from this browser's cache
+  let msgTimer = null;
+
+  // ---- small helpers ----------------------------------------------------
+
+  // localStorage can throw (private mode, blocked storage); the page works without it.
+  function store(key, val){
+    try{
+      if(val === undefined) return localStorage.getItem(key);
+      localStorage.setItem(key, val);
+    }catch(e){ return null; }
+  }
+
+  function myName(){ return whoInput.value.trim(); }
+
+  function sameName(a, b){
+    return String(a || '').trim().toLowerCase() === String(b || '').trim().toLowerCase();
+  }
+
+  function escapeHtml(str){
+    const d = document.createElement('div');
+    d.textContent = str;
+    return d.innerHTML;
+  }
+
+  function fmtWhen(ts){
+    if(!ts) return '';
+    const d = new Date(ts);
+    let s = d.toLocaleString('en-US', { weekday:'short', hour:'numeric', minute:'2-digit' });
+    const days = Math.floor((Date.now() - ts) / 86400000);
+    if(days >= 1) s += ` (${days} day${days === 1 ? '' : 's'} ago)`;
+    return s;
+  }
+
+  function locName(id){
+    const loc = locations.find(l => l.id === id);
+    return loc ? loc.name : 'That stop';
+  }
+
+  function showMsg(msg){
+    msgArea.textContent = msg;
+    clearTimeout(msgTimer);
+    msgTimer = setTimeout(() => { msgArea.textContent = ''; }, 10000);
+  }
 
   async function apiCall(params){
     const url = API_URL + '?' + new URLSearchParams(params).toString();
+    const t0 = performance.now();
     const res = await fetch(url);
     if(!res.ok) throw new Error('Request failed: ' + res.status);
     const data = await res.json();
+    // Visible in the browser console; useful for telling network/Google delay from page delay.
+    console.info(`[route-sheet] ${params.action}: ${Math.round(performance.now() - t0)} ms`);
     if(data.error) throw new Error(data.error);
     return data;
   }
+
+  // ---- weeks --------------------------------------------------------------
 
   function mondayOf(date){
     const d = new Date(date);
@@ -353,6 +457,8 @@
     return { key: `week:${y}-${m}-${d}`, mondayDate: base };
   }
 
+  function currentKey(){ return weekKeyFor(weekOffset).key; }
+
   function formatWeekLabel(mondayDate){
     const end = new Date(mondayDate);
     end.setDate(end.getDate()+6);
@@ -360,16 +466,59 @@
     return `${mondayDate.toLocaleDateString('en-US', opts)} – ${end.toLocaleDateString('en-US', opts)}`;
   }
 
+  // ---- loading --------------------------------------------------------------
+
   async function loadLocations(){
     const data = await apiCall({ action: 'getLocations' });
     locations = data.locations || [];
   }
 
-  async function loadWeek(){
-    const { key } = weekKeyFor(weekOffset);
-    const data = await apiCall({ action: 'getWeek', week: key });
-    weekData = { checks: data.checks || {} };
+  // Locations + this week's checks in a single request.
+  async function loadAll(){
+    const key = currentKey();
+    const seq = writeSeq;
+    const data = await apiCall({ action: 'getAll', week: key });
+    locations = data.locations || [];
+    // Skip the checks if the user switched weeks, or saved something while this
+    // read was in flight (the read may predate that save).
+    if(key === currentKey() && seq === writeSeq){
+      weekData = { checks: data.checks || {} };
+      if(weekOffset === 0) saveCache(key);
+    }
   }
+
+  // Last-seen list for the current week, so a returning visitor sees the
+  // route sheet instantly while the fresh copy loads in the background.
+  function cacheKey(){ return 'routeSheet.cache:' + API_URL; }
+  function saveCache(key){
+    store(cacheKey(), JSON.stringify({ week: key, locations, checks: weekData.checks }));
+  }
+  function loadCache(){
+    try{
+      const c = JSON.parse(store(cacheKey()) || 'null');
+      if(c && c.week === weekKeyFor(0).key && Array.isArray(c.locations)){
+        locations = c.locations;
+        weekData = { checks: c.checks || {} };
+        return true;
+      }
+    }catch(e){}
+    return false;
+  }
+
+  async function loadWeek(){
+    const key = currentKey();
+    const data = await apiCall({ action: 'getWeek', week: key });
+    // Ignore the answer if the user switched weeks while it was in flight.
+    if(key === currentKey()) weekData = { checks: data.checks || {} };
+  }
+
+  // Apply a single stop's server record, unless the user has moved to another week.
+  function applyCheck(key, id, check){
+    writeSeq++;
+    if(key === currentKey() && check) weekData.checks[id] = check;
+  }
+
+  // ---- rendering ------------------------------------------------------------
 
   function render(){
     const { mondayDate } = weekKeyFor(weekOffset);
@@ -382,16 +531,54 @@
       return;
     }
 
-    let doneCount = 0;
+    const isCurrentWeek = weekOffset === 0;
+    const me = myName();
+    const hideOthers = hideOthersInput.checked;
+    let doneCount = 0, claimedCount = 0, hiddenCount = 0;
+
     const rows = locations.map(loc => {
-      const c = weekData.checks[loc.id];
-      const isDone = !!(c && c.checked);
+      const c = weekData.checks[loc.id] || {};
+      const isDone = !!c.checked;
+      const claimer = c.claimedBy || '';
+      const isMine = !!claimer && !!me && sameName(claimer, me);
+      const isOthers = !!claimer && !isMine;
+
       if(isDone) doneCount++;
-      const meta = isDone
-        ? `checked off${c.by ? ' by ' + escapeHtml(c.by) : ''}${c.at ? ' · ' + new Date(c.at).toLocaleDateString('en-US',{month:'short',day:'numeric'}) : ''}`
-        : 'not yet done';
+      else if(claimer) claimedCount++;
+
+      if(hideOthers && isOthers && !isDone){ hiddenCount++; return ''; }
+
+      let meta;
+      if(isDone){
+        meta = `delivered${c.by ? ' by ' + escapeHtml(c.by) : ''}${c.at ? ' · ' + new Date(c.at).toLocaleDateString('en-US',{month:'short',day:'numeric'}) : ''}`;
+        if(claimer && !sameName(claimer, c.by)) meta += ` (claimed by ${escapeHtml(claimer)})`;
+      }else if(isMine){
+        meta = `claimed by you · ${fmtWhen(c.claimedAt)}`;
+      }else if(isOthers){
+        meta = `claimed by ${escapeHtml(claimer)} · ${fmtWhen(c.claimedAt)}`;
+      }else{
+        meta = isCurrentWeek ? 'open' : 'not done';
+      }
+
+      // Claims only make sense for the current week and for stops not yet delivered.
+      let claimUi = '';
+      if(isCurrentWeek && !isDone){
+        if(pending.has(loc.id)){
+          claimUi = '<span class="claim-pending">saving…</span>';
+        }else if(isMine){
+          claimUi = `<span class="claim-tag mine">yours</span>
+            <button class="claim-btn" data-action="release">Release</button>`;
+        }else if(isOthers){
+          claimUi = `<span class="claim-tag others" title="${escapeHtml(claimer)}">${escapeHtml(claimer)}</span>
+            <button class="claim-btn" data-action="takeover">Take over</button>`;
+        }else{
+          claimUi = '<button class="claim-btn" data-action="claim">Claim</button>';
+        }
+      }
+
+      const cls = ['stop', isDone ? 'done' : '', !isDone && isMine ? 'mine' : '', !isDone && isOthers ? 'others' : ''].join(' ');
       return `
-        <li class="stop ${isDone ? 'done' : ''}" data-id="${loc.id}">
+        <li class="${cls}" data-id="${loc.id}">
           <div class="box" data-action="toggle"></div>
           <div class="stop-main">
             <div class="stop-name" data-action="toggle">${escapeHtml(loc.name)}</div>
@@ -399,39 +586,107 @@
             <div class="stop-meta">${meta}</div>
           </div>
           <div class="stop-actions">
+            ${claimUi}
             <button class="icon-btn" data-action="delete" title="Remove location">remove</button>
           </div>
         </li>`;
     }).join('');
 
-    listWrap.innerHTML = `<ul class="stops">${rows}</ul>`;
-    progressText.textContent = `${doneCount} of ${locations.length} stops done this week`;
+    const hiddenNote = hiddenCount ? `<div class="empty">${hiddenCount} stop${hiddenCount === 1 ? '' : 's'} claimed by others hidden</div>` : '';
+    listWrap.innerHTML = `<ul class="stops">${rows}</ul>${hiddenNote}`;
+
+    const total = locations.length;
+    if(isCurrentWeek){
+      const open = total - doneCount - claimedCount;
+      progressText.textContent = `${doneCount} done · ${claimedCount} claimed · ${open} open of ${total}` +
+        (showingCached ? ' · updating…' : '');
+    }else{
+      progressText.textContent = `${doneCount} of ${total} stops done that week`;
+    }
   }
 
-  function escapeHtml(str){
-    const d = document.createElement('div');
-    d.textContent = str;
-    return d.innerHTML;
-  }
+  // ---- actions --------------------------------------------------------------
 
   async function toggleLocation(id){
-    const { key } = weekKeyFor(weekOffset);
-    const existing = weekData.checks[id];
-    const nowDone = !(existing && existing.checked);
-    const by = whoInput.value.trim();
-    // optimistic update
-    weekData.checks[id] = nowDone ? { checked: true, by, at: Date.now() } : { checked: false };
+    if(pending.has(id)) return;
+    const key = currentKey();
+    const existing = weekData.checks[id] || {};
+    const nowDone = !existing.checked;
+    const by = myName();
+    // optimistic update; keep any claim info on the record
+    weekData.checks[id] = Object.assign({}, existing,
+      nowDone ? { checked: true, by, at: Date.now() } : { checked: false });
+    pending.add(id);
     render();
     try{
-      await apiCall({ action: 'toggleCheck', week: key, id, checked: String(nowDone), by });
+      const data = await apiCall({ action: 'toggleCheck', week: key, id, checked: String(nowDone), by });
+      applyCheck(key, id, data.check);
     }catch(e){
-      showError('Could not save that check-off. ' + e.message);
-      await loadWeek();
+      showMsg('Could not save that check-off. ' + e.message);
+      try{ await loadWeek(); }catch(_){}
+    }finally{
+      pending.delete(id);
+      render();
+    }
+  }
+
+  // Claims are NOT optimistic: the server decides who gets the stop, so we
+  // show "saving…" and then render whatever it says.
+  async function claimLocation(id, force){
+    const name = myName();
+    if(!name){
+      showMsg('Enter your name in the "Distributed by" box before claiming a stop.');
+      whoInput.focus();
+      return;
+    }
+    if(pending.has(id)) return;
+    const key = currentKey();
+    pending.add(id);
+    render();
+    try{
+      const data = await apiCall({ action: 'claim', week: key, id, by: name, force: String(!!force) });
+      applyCheck(key, id, data.check);
+      if(!data.ok){
+        if(data.reason === 'done'){
+          showMsg(`${locName(id)} was already delivered.`);
+        }else{
+          showMsg(`${data.check.claimedBy} claimed ${locName(id)} first (${fmtWhen(data.check.claimedAt)}).`);
+        }
+      }
+    }catch(e){
+      showMsg('Could not claim that stop. ' + e.message);
+    }finally{
+      pending.delete(id);
+      render();
+    }
+  }
+
+  function takeOver(id){
+    const c = weekData.checks[id] || {};
+    const ok = confirm(`${c.claimedBy} claimed ${locName(id)} ${fmtWhen(c.claimedAt)}.\n\nTake it over? Only do this if you know they aren't going.`);
+    if(ok) claimLocation(id, true);
+  }
+
+  async function releaseLocation(id){
+    if(pending.has(id)) return;
+    const key = currentKey();
+    pending.add(id);
+    render();
+    try{
+      const data = await apiCall({ action: 'release', week: key, id, by: myName() });
+      applyCheck(key, id, data.check);
+      if(!data.ok) showMsg(`${locName(id)} is now claimed by ${data.check.claimedBy}.`);
+    }catch(e){
+      showMsg('Could not release that stop. ' + e.message);
+    }finally{
+      pending.delete(id);
       render();
     }
   }
 
   async function deleteLocation(id){
+    const loc = locations.find(l => l.id === id);
+    if(!loc || !confirm(`Remove "${loc.name}" from the list for every week?`)) return;
     const prev = locations;
     locations = locations.filter(l => l.id !== id);
     render();
@@ -439,17 +694,44 @@
       await apiCall({ action: 'deleteLocation', id });
     }catch(e){
       locations = prev;
-      showError('Could not remove that location. ' + e.message);
+      showMsg('Could not remove that location. ' + e.message);
       render();
     }
   }
 
-  function showError(msg){
-    const div = document.createElement('div');
-    div.className = 'error-msg';
-    div.textContent = msg;
-    listWrap.prepend(div);
+  // ---- background refresh ------------------------------------------------
+
+  let refreshing = false;
+  async function refresh(){
+    // Skip while a request is in flight so a stale read can't undo it on screen.
+    if(!connected || refreshing || document.hidden || pending.size) return;
+    refreshing = true;
+    try{
+      await loadAll();
+      if(!pending.size) render();
+    }catch(e){
+      // A missed refresh isn't worth interrupting anyone; the next one will try again.
+    }finally{
+      refreshing = false;
+    }
   }
+
+  setInterval(refresh, REFRESH_MS);
+  document.addEventListener('visibilitychange', () => { if(!document.hidden) refresh(); });
+
+  // ---- wiring ---------------------------------------------------------------
+
+  whoInput.value = store('routeSheet.who') || '';
+  whoInput.addEventListener('input', () => {
+    store('routeSheet.who', whoInput.value.trim());
+    if(connected) render();
+  });
+
+  hideOthersInput.checked = store('routeSheet.hideOthers') === '1';
+  hideOthersInput.addEventListener('change', () => {
+    store('routeSheet.hideOthers', hideOthersInput.checked ? '1' : '0');
+    render();
+  });
 
   listWrap.addEventListener('click', (e) => {
     const li = e.target.closest('li.stop');
@@ -458,6 +740,9 @@
     const action = e.target.getAttribute('data-action');
     if(action === 'toggle') toggleLocation(id);
     if(action === 'delete') deleteLocation(id);
+    if(action === 'claim') claimLocation(id, false);
+    if(action === 'takeover') takeOver(id);
+    if(action === 'release') releaseLocation(id);
   });
 
   addBtn.addEventListener('click', async () => {
@@ -474,7 +759,7 @@
       notesInput.value = '';
       render();
     }catch(e){
-      showError('Could not add that location. ' + e.message);
+      showMsg('Could not add that location. ' + e.message);
     }
     addBtn.disabled = false;
   });
@@ -483,31 +768,43 @@
     if(e.key === 'Enter') addBtn.click();
   });
 
-  prevBtn.addEventListener('click', async () => {
-    weekOffset -= 1;
+  async function changeWeek(delta){
+    weekOffset += delta;
     listWrap.innerHTML = '<div class="loading">Loading checklist…</div>';
-    await loadWeek();
+    try{
+      await loadWeek();
+    }catch(e){
+      showMsg('Could not load that week. ' + e.message);
+    }
     render();
-  });
+  }
 
-  nextBtn.addEventListener('click', async () => {
-    if(weekOffset >= 0) return;
-    weekOffset += 1;
-    listWrap.innerHTML = '<div class="loading">Loading checklist…</div>';
-    await loadWeek();
-    render();
-  });
+  prevBtn.addEventListener('click', () => changeWeek(-1));
+  nextBtn.addEventListener('click', () => { if(weekOffset < 0) changeWeek(1); });
 
   async function connectAndLoad(){
-    listWrap.innerHTML = '<div class="loading">Connecting…</div>';
+    if(weekOffset === 0 && loadCache()){
+      showingCached = true;
+      connected = true;
+      render();
+    }else{
+      listWrap.innerHTML = '<div class="loading">Connecting…</div>';
+    }
     try{
-      await loadLocations();
-      await loadWeek();
+      await loadAll();
+      connected = true;
+      showingCached = false;
       setupBox.style.display = 'none';
       statusLine.style.display = 'flex';
-      render();
+      if(!pending.size) render();
     }catch(e){
-      listWrap.innerHTML = '<div class="error-msg">Could not connect: ' + e.message + '<br>Double-check the Web App URL and that the deployment access is set to "Anyone".</div>';
+      if(showingCached){
+        showingCached = false;
+        render();
+        showMsg('Showing your last saved copy; could not reach the sheet. ' + e.message);
+      }else{
+        listWrap.innerHTML = '<div class="error-msg">Could not connect: ' + escapeHtml(e.message) + '<br>Double-check the Web App URL and that the deployment access is set to "Anyone".</div>';
+      }
     }
   }
 
