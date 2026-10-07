@@ -27,8 +27,13 @@ body {
   color: #333;
 }
 
-h1, h2 {
+h1, .menu-title, .era-date {
   font-family: 'Glass Antiqua', serif;
+  font-weight: normal;
+}
+
+h2, .era-title, .banner h2, .anniversary h2 {
+  font-family: serif;
   font-weight: normal;
 }
 
@@ -46,28 +51,46 @@ h1 {
 }
 
 .footer {
-  margin-top: 2rem;
+  width: 100%;
+  max-width: 1000px;
+  margin: 2rem auto 0 auto;
   text-align: right;
   font-size: 0.875rem;
   color: #666;
+  box-sizing: border-box;
 }
 
 /* --- Menu Grid Layout (Index Pages) --- */
+/* Default 2-column layout for standard menu pages (index-2025-2026.html & index-06Sept2026.html) */
 .menu-container {
-  max-width: 1000px;
+  max-width: 800px;
+  margin: 0 auto;
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  grid-template-columns: repeat(2, 1fr);
   gap: 2rem;
 }
 
-/* Toggle support for Chef's Special column */
+/* 3-column layout when Chef's Special is active (index.html) */
+.menu-container:has(.chefs-special),
+html[data-chefs-special="on"] .menu-container {
+  max-width: 1000px;
+  grid-template-columns: repeat(3, 1fr);
+}
+
+/* Fallback when Chef's Special is explicitly toggled off */
 html[data-chefs-special="off"] .menu-container {
-  grid-template-columns: repeat(2, 1fr);
   max-width: 800px;
+  grid-template-columns: repeat(2, 1fr);
 }
 
 html[data-chefs-special="off"] .chefs-special {
   display: none;
+}
+
+/* Match footer max-width to 2-column menu layout on 2-column pages */
+.menu-container:not(:has(.chefs-special)) ~ .footer,
+html[data-chefs-special="off"] .footer {
+  max-width: 800px;
 }
 
 .menu-section {
@@ -79,10 +102,8 @@ html[data-chefs-special="off"] .chefs-special {
 }
 
 .menu-title {
-  font-family: 'Glass Antiqua', serif;
   font-size: 3rem;
   color: #333;
-  font-weight: normal;
 }
 
 .menu-content {
@@ -138,15 +159,11 @@ html[data-chefs-special="off"] .chefs-special {
   text-align: center;
   padding: 2rem;
   margin-top: 2rem;
-  max-width: 800px;
-  margin-left: auto;
-  margin-right: auto;
+  width: 100%;
+  box-sizing: border-box;
 }
 
-.banner h2,
-.anniversary h2 {
-  font-family: serif;
-  font-weight: normal;
+.banner h2 {
   font-size: 1.5rem;
 }
 
@@ -238,7 +255,6 @@ html[data-chefs-special="off"] .chefs-special {
 }
 
 .era-date {
-  font-family: 'Glass Antiqua', serif;
   font-size: 1.2rem;
   color: #666;
 }
@@ -264,9 +280,9 @@ html[data-chefs-special="off"] .chefs-special {
 }
 
 .staff-list ul {
-  list-style: disc;
+  list-style: none;
   padding: 0;
-  margin: 0 0 0 1.5rem;
+  margin: 0;
 }
 
 .staff-list li {
