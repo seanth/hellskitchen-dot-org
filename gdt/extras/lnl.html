@@ -10,7 +10,7 @@
 
 <main>
     <img id="gallery-image" src="" alt="Randomized gallery of live n learn images">
-    <button id="playpause" onclick="({interval, playing} = toggleInterval(interval, playing, 'playpause'))">Pause</button>
+    <button id="playpause" onclick="timer.toggle()">Pause</button>
 </main>
 
 <footer>
@@ -27,6 +27,54 @@
 
     const imgElement = document.getElementById("gallery-image");
     let currentIndex = -1;
+
+    class Timer {
+        constructor(startFunction, onStart, onStop, period) {
+            this.startTime = Date.now();
+            this.heldTime = 0;
+            this.startFunction = startFunction;
+            this.period = period;
+            this.running = true;
+            this.onStart = onStart;
+            this.onStop = onStop;
+
+            this.interval = setInterval(() => {
+                this.startTime = Date.now();
+                startFunction();
+            }, period)
+        }
+
+        toggle() {
+            if (this.running) {
+                this.onStop();
+                this.stop();
+            }
+            else {
+                this.onStart();
+                this.restart();
+            }
+
+            this.running = !this.running;
+        }
+
+        restart() {
+            this.interval = setTimeout(() => {
+                this.startTime = Date.now();
+                this.startFunction();
+
+                this.interval = setInterval(() => {
+                    this.startTime = Date.now();
+                    this.startFunction();
+                }, this.period)
+            },
+            this.period - this.heldTime + this.startTime)
+        }
+
+        stop() {
+            this.heldTime = Date.now();
+            clearInterval(this.interval);
+        }
+    }
 
     function getNextRandomIndex() {
         if (images.length <= 1) return 0;
@@ -54,34 +102,13 @@
     // Set initial image immediately on load
     changeImage();
 
-    function startInterval() {
-
-        // Rotate images continuously while page is open
-        return setInterval(fadeToNextImage, ROTATION_INTERVAL);
-    }
-
-    let interval = startInterval();
-    let playing = true;
-
-    function toggleInterval(interval, playing, id) {
-        if (playing) {
-            document.getElementById(id).innerHTML = "Play";
-            clearInterval(interval);
-            
-            return {
-                interval: 0,
-                playing: false,
-            }
-        }
-        else {
-            document.getElementById(id).innerHTML = "Pause";
-
-            return {
-                interval: startInterval(),
-                playing: true,
-            }
-        }
-    }
+    let timer = new Timer(fadeToNextImage, () => {
+        document.getElementById("playpause").innerHTML = "Pause";
+    },
+    () => {
+        document.getElementById("playpause").innerHTML = "Play";
+    },
+    ROTATION_INTERVAL)
     
 </script>
 
