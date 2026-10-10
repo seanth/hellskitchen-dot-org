@@ -5,18 +5,22 @@ on:
     branches:
       - master
 
+concurrency:
+  group: deploy-${{ github.ref }}
+  cancel-in-progress: false
+
 jobs:
   ci:
     runs-on: ubuntu-latest
     permissions:
-        packages: write
+        contents: read
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
       - name: rsync deployments
-        uses: burnett01/rsync-deployments@7.0.2
+        uses: burnett01/rsync-deployments@4d419d1dc46d4a8a2b6ceab2f951f0f93b2da8f5 # v9
         with:
-          switches: -avzr --delete --exclude .git --exclude .github --exclude .gitignore
+          switches: -avz --delete --exclude .git --exclude .github --exclude .gitignore
           path: ./
           remote_path: ${{ vars.REMOTE_RSYNC_PATH }}
           remote_host: ${{ secrets.REMOTE_SSH_HOST }}
