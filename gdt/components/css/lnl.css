@@ -6,6 +6,7 @@
 
 body {
     background-color: #f0f0f0;
+    background-image: url("https://www.hellskitchen.org/gdt/images/bg/bg1.gif");
     color: #333;
     font-family: system-ui, -apple-system, sans-serif;
     min-height: 100vh;
