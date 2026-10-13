@@ -19,6 +19,7 @@
 
 body {
   font-family: system-ui, -apple-system, sans-serif;
+  background-image: url("https://www.hellskitchen.org/gdt/images/bg/bg1.gif");
   /*max-width: 1000px;*/
   margin: 0 auto;
   padding: 2rem;
