@@ -27,7 +27,6 @@ main {
     max-width: 1000px;
 }
 
-/* Image wrapper matching .menu-section card container */
 main > div {
     background: #ffffff;
     padding: 1.5rem;
@@ -52,7 +51,6 @@ main > div {
     opacity: 0;
 }
 
-/* Control button using brand accent color (#c85a24) */
 #playpause {
     background-color: #c85a24;
     color: #ffffff;
@@ -75,7 +73,6 @@ main > div {
     transform: scale(0.98);
 }
 
-/* Footer matching .footer styles */
 footer {
     margin-top: 2rem;
     text-align: center;
