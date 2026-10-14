@@ -19,11 +19,13 @@
 
 body {
   font-family: system-ui, -apple-system, sans-serif;
+  background-image: url("https://www.hellskitchen.org/gdt/images/bg/bg1.gif");
   /*max-width: 1000px;*/
   margin: 0 auto;
   padding: 2rem;
   background-color: #f0f0f0;
   color: #333;
+  text-align: center;
 }
 html[data-chefs-special="off"] .menu-container {
   grid-template-columns: repeat(2, 1fr);
@@ -49,7 +51,7 @@ html[data-chefs-special="off"] .chefs-special {
   font-family: 'Glass Antiqua', serif;
   font-size: 3rem;
   color: #333;
-  font-weight: normal;
+  font-weight: bold;
 }
 h1 {
   font-family: 'Glass Antiqua', serif;
@@ -91,6 +93,7 @@ h1 {
   text-align: center;
   padding: 2rem;
   margin-top: 2rem;
+  display: grid;
 }
 .banner h2 {
   font-family: serif;
@@ -103,6 +106,7 @@ h1 {
   font-weight: normal;
   font-size: 2.5rem;
   text-decoration: none;
+
 }
 .footer {
   margin-top: 2rem;
@@ -135,7 +139,6 @@ h1 {
   display: flex;
   justify-content: center; /* Horizontally centers the text */
   align-items: center;
-  color: white;
 }
 .fixed-square {
   width: 60%;
@@ -145,4 +148,7 @@ h1 {
   justify-content: center; /* Horizontally centers the text */
   align-items: center;
   color: white;
+}
+a {
+  text-decoration: none;
 }
