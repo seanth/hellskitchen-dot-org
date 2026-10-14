@@ -93,6 +93,7 @@ h1 {
   text-align: center;
   padding: 2rem;
   margin-top: 2rem;
+  display: grid;
 }
 .banner h2 {
   font-family: serif;
@@ -105,6 +106,7 @@ h1 {
   font-weight: normal;
   font-size: 2.5rem;
   text-decoration: none;
+
 }
 .footer {
   margin-top: 2rem;
